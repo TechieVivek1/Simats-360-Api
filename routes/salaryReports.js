@@ -5,7 +5,8 @@ const salaryReport = (req,res) => {
     if (!bioId) {
         return res.status(422).json({
             status: false,
-            message: "Parameter is missing"
+            message: "Parameter is missing",
+            salaryReportData: []
             
         })
     }
@@ -14,11 +15,16 @@ const salaryReport = (req,res) => {
     db.query(fetchQuery, bioId,(err, result) => {
             if (err) {
                 console.error('Database error:', err);
-            return res.status(500).json({ status: false, message: 'Internal server error' });
+            return res.status(500).json({ 
+                status: false, 
+                message: 'Internal server error',
+                salaryReportData: []
+            });
             }
 
             if (result.length == 0) {
-                return res.status(404).json({ status: false, message: 'No Data Found',
+                return res.status(404).json({ status: false, 
+                    message: 'No Data Found',
                     salaryReportData: result
                  });
             }
