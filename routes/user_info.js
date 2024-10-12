@@ -1,5 +1,5 @@
 
-const con = require('../confing')
+const con = require('../config')
 
 const userInfo = (req,res)=>{
 

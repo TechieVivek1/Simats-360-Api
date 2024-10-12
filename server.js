@@ -1,13 +1,13 @@
 const express = require('express')
 const app = express()
 const body = require('body-parser')
-const con = require('./confing')
+const con = require('./config')
 
 require('dotenv').config()
 
 app.use(express.json())
 app.use(body.json())
-app.use(express.urlencoded({ extended: true }));
+// app.use(express.urlencoded({ extended: true }));
 
 const port = process.env.PORT || 2000;
 
