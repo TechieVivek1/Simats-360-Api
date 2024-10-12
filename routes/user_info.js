@@ -3,6 +3,8 @@ const con = require('../confing')
 
 const userInfo = (req,res)=>{
 
+
+
     const {bio_id ,campus} = req.body
 
     if(!bio_id){
@@ -14,30 +16,22 @@ const userInfo = (req,res)=>{
 
     let  query = `SELECT e.employee_name,e.category,e.dob,e.doj,e.phone,e.email,e.address,p.profileImg,e.bio_id,e.staff_id,e.designation_id,d.designation_name FROM emp_ref e JOIN profileimages p ON e.bio_id = p.bio_id JOIN designation d ON e.designation_id = d.designation_id WHERE e.bio_id = ?;`
 
-    try {
-        con.query(query,[bio_id], (err, results,fields) => {
-            if (err) {
-                return res.status(500).json({ message: 'Error fetching user info',error:err })
-            }
-    
-            if(results.length === 0){
-                return res.status(404).json({message: 'User not found'})
-            }
-    
-            return res.status(200).json({
-                status:200,
-                message: 'User info fetched successfully',
-                data: results
-            })
-            
-        })
-    } catch (error) {
-        res.status(500).json({
-            status:500,
-            message:error.message
-        })
-    }
+    con.query(query,[bio_id], (err, results,fields) => {
+        if (err) {
+            return res.status(500).json({ message: 'Error fetching user info',error:err })
+        }
 
+        if(results.length === 0){
+            return res.status(404).json({message: 'User not found'})
+        }
+
+        return res.status(200).json({
+            status:200,
+            message: 'User info fetched successfully',
+            data: results
+        })
+        
+    })
     
 }
 

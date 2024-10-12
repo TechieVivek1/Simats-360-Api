@@ -28,9 +28,9 @@ try{
 
 app.use((err, req, res, next) => {
   if (err instanceof SyntaxError) {
-    return res.status(400).json({ message: 'Invalid JSON format' });  // Send a meaningful error message
+    return res.status(400).json({ message: 'Invalid JSON format' });  
   }
-  next(err);  // Pass the error to the next middleware if it's not a SyntaxError
+  next(err);  
 });
 
 // routes 
