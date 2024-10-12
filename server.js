@@ -15,7 +15,7 @@ try{
   con.connect((err)=>{
 
     if (err) {
-      console.log(err)
+     return console.log(err)
     }
 
     console.log("Connected to DB")

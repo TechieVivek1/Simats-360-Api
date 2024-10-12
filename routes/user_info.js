@@ -3,8 +3,6 @@ const con = require('../confing')
 
 const userInfo = (req,res)=>{
 
-
-
     const {bio_id ,campus} = req.body
 
     if(!bio_id){
