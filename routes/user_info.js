@@ -3,15 +3,12 @@ const con = require('../config')
 
 const userInfo = (req,res)=>{
 
-    const {bio_id ,campus} = req.body
+    const {bio_id} = req.body
 
     if(!bio_id){
         return res.status(400).json({message: 'bio_id is required'})
     }
-    // if(!campus){
-    //     return res.status(400).json({message: 'campus is required'})
-    //     }
-
+    
     let  query = `SELECT e.employee_name,e.category,e.dob,e.doj,e.phone,e.email,e.address,p.profileImg,e.bio_id,e.staff_id,e.designation_id,d.designation_name FROM emp_ref e JOIN profileimages p ON e.bio_id = p.bio_id JOIN designation d ON e.designation_id = d.designation_id WHERE e.bio_id = ?;`
 
     con.query(query,[bio_id], (err, results,fields) => {
