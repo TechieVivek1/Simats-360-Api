@@ -15,12 +15,9 @@
     "crypto": "^1.0.1",
     "dotenv": "^16.4.5",
     "express": "^4.21.1",
-<<<<<<< HEAD
     "moment": "^2.30.1",
     "moment-timezone": "^0.5.46",
-=======
     "lodash": "^4.17.21",
->>>>>>> 139e5d18f6912211dd1840dfff5b0ed6dc932dde
     "mysql": "^2.18.1",
     "nodemon": "^3.1.7",
     "router": "^1.3.8"
