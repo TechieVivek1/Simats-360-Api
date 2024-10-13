@@ -17,7 +17,8 @@ const loginUser = (req, res) => {
     if (!bioId || !password) {
         return res.status(422).json({
             status: false,
-            message: 'Parameter is missing'
+            message: 'Parameter is missing',
+            userData: []
         });
     }
 
@@ -29,17 +30,26 @@ const loginUser = (req, res) => {
 
         if (err) {
             console.error('Database error:', err);
-            return res.status(500).json({ status: false, message: 'Internal server error' });
+            return res.status(500).json({ status: false, message: 'Internal server error', userData: results });
         }
 
         if (results.length === 0) {
             return res.status(401).json({
                 status: false,
-                message: 'BioID not found'
+                message: 'BioID not found',
+                userData: results
             });
         }
 
         const user = results[0]; 
+        console.log
+
+        const userData = results.map(row => ({
+            campus: row.campus,
+            category: row.category,
+            bioId: row.bio_id
+        }))
+
 
         // Hash the provided password
         const hashedPassword = hashPassword(password);
@@ -50,28 +60,32 @@ const loginUser = (req, res) => {
             if (user.status.toLowerCase() !== "active") {
                 return res.status(401).json({
                     status: false,
-                    message: 'Your Account is not Active!'
+                    message: 'Your Account is not Active!',
+                    userData: []
                 });
             }
             // Check if the user's account is approved
             else if (user.director_status.toLowerCase() !== "approved") {
                 return res.status(401).json({
                     status: false,
-                    message: 'Your Account is not Approved'
+                    message: 'Your Account is not Approved',
+                    userData: []
                 });
             } 
             // Successful login
             else {
                 return res.status(200).json({
                     status: true,
-                    message: 'Login successful!'
+                    message: 'Login successful!',
+                    userData: userData
                 });
             }
         } else {
             // Incorrect password
             return res.status(401).json({
                 status: false,
-                message: 'Incorrect password'
+                message: 'Incorrect password',
+                userData: []
             });
         }
     });
