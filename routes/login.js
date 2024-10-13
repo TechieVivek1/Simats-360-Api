@@ -10,10 +10,6 @@ const loginUser = (req, res) => {
 
     const { bioId, password } = req.body;
 
-
-    console.log(`Body -----`, req.body);
-
-
     if (!bioId || !password) {
         return res.status(422).json({
             status: false,
@@ -22,9 +18,7 @@ const loginUser = (req, res) => {
         });
     }
 
-
     const sql = 'SELECT * FROM emp_ref WHERE bio_id = ?';
-
 
     db.query(sql, [bioId], (err, results) => {
 
@@ -51,12 +45,9 @@ const loginUser = (req, res) => {
         }))
 
 
-        // Hash the provided password
         const hashedPassword = hashPassword(password);
 
-        // Check if the hashed password matches the user's stored password
         if (hashedPassword === user.password) {
-            // Check if the user account is active
             if (user.status.toLowerCase() !== "active") {
                 return res.status(401).json({
                     status: false,
@@ -64,7 +55,6 @@ const loginUser = (req, res) => {
                     userData: []
                 });
             }
-            // Check if the user's account is approved
             else if (user.director_status.toLowerCase() !== "approved") {
                 return res.status(401).json({
                     status: false,
@@ -72,7 +62,6 @@ const loginUser = (req, res) => {
                     userData: []
                 });
             } 
-            // Successful login
             else {
                 return res.status(200).json({
                     status: true,
@@ -81,7 +70,6 @@ const loginUser = (req, res) => {
                 });
             }
         } else {
-            // Incorrect password
             return res.status(401).json({
                 status: false,
                 message: 'Incorrect password',
