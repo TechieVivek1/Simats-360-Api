@@ -1,6 +1,7 @@
 const con = require("../config");
 const punchData = require('./punchData');
 const empDetailsData = require('./empDetails');
+const shiftData = require('./shift')
 const punch_url = process.env.ATTENDANCE_URL;
 
 const homeInfo = async (req, res) => {
@@ -17,10 +18,12 @@ const homeInfo = async (req, res) => {
         const [punchResult, empDetailsResult] = await Promise.all([
             punchData(bio_id),
             empDetailsData(campus, bio_id)
+            
         ]);
 
         let punchResultData = [];
         let empDetailsResulttResultData = [];
+        let shiftResultsData = []
 
         if (punchResult && punchResult.status) {
             punchResultData = punchResult.data;
@@ -28,10 +31,17 @@ const homeInfo = async (req, res) => {
 
         if (empDetailsResult && empDetailsResult.status) {
             empDetailsResulttResultData = empDetailsResult.empDetails;
-        } 
+        }
 
 
-        res.json({ punch: punchResultData, empDetails: empDetailsResulttResultData });
+        const shiftResult = await shiftData(empDetailsResulttResultData.shift)
+
+        if (shiftResult && shiftResult.status) {
+            shiftResultsData = shiftResult.data
+        }
+        
+
+        res.json({ punch: punchResultData, empDetails: empDetailsResulttResultData ,shift:shiftResultsData});
 
     } catch (error) {
 

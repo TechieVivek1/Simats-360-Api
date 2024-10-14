@@ -35,7 +35,7 @@ app.use((err, req, res, next) => {
 
 // routes 
 
-const EmployeeRoutes = require('../Simats-360-Api/route/employee_route').default
+const EmployeeRoutes = require('../Simats-360-Api/route/employee_route')
 
 app.use('/employee',EmployeeRoutes)
 
