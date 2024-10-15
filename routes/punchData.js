@@ -1,25 +1,17 @@
-
 const axios = require('axios');
-const moment = require('moment-timezone'); 
+const moment = require('moment-timezone');
 
 function formatDate(date) {
     const dd = String(date.getDate()).padStart(2, '0');
-    const mm = String(date.getMonth() + 1).padStart(2, '0'); 
+    const mm = String(date.getMonth() + 1).padStart(2, '0');
     const yyyy = date.getFullYear();
     return `${dd}-${mm}-${yyyy}`;
 }
 
-function formatTime(date) {
-    const hh = String(date.getHours()).padStart(2, '0');
-    const mm = String(date.getMinutes()).padStart(2, '0');
-    const ss = String(date.getSeconds()).padStart(2, '0');
-    return `${hh}:${mm}:${ss}`;
-}
-
-async function punchData(userId) {
+async function punchData(userId, year, month) {
     const punch_url = process.env.PUNCH_URL;
-    const url = punch_url + userId;
-    
+    const url = `${punch_url}${userId}`;
+
     try {
         const response = await axios.get(url);
         const data = response.data;
@@ -31,20 +23,22 @@ async function punchData(userId) {
         const attendanceRecords = data.attendance;
         const result = {};
         const now = moment();
-        const startPreviousMonth = moment().subtract(1, 'month').date(21);
-        const endPreviousMonth = startPreviousMonth.clone().endOf('month');
-        const startCurrentMonth = moment().startOf('month');
-        const endCurrentMonth = moment().date(20);
+
+        // Calculate the start date (21st of the given month) and end date (20th of the next month)
+        const startDate = moment(`${year}-${month}-21`, 'YYYY-MM-DD');
+        const endDate = moment(startDate).add(1, 'month').date(20);
+
+        // Ensure we do not fetch future dates if the endDate is after now
+        const adjustedEndDate = endDate.isAfter(now) ? now : endDate;
+
+        const attendanceDates = new Set();
 
         attendanceRecords.forEach(record => {
             const logDate = moment.tz(record.LogDate.date, "Asia/Kolkata");
             const formattedDate = formatDate(logDate.toDate());
-            
-            // Check if the logDate is in the desired range
-            if (
-                (logDate.isBetween(startPreviousMonth, endPreviousMonth, null, '[]')) || // Previous month from 21st
-                (logDate.isBetween(startCurrentMonth, endCurrentMonth, null, '[]')) // Current month up to 20th
-            ) {
+
+            // Check if logDate is between the start and end dates (inclusive)
+            if (logDate.isBetween(startDate, adjustedEndDate, null, '[]')) {
                 if (!result[formattedDate]) {
                     result[formattedDate] = {
                         date: formattedDate,
@@ -52,21 +46,35 @@ async function punchData(userId) {
                     };
                 }
 
-                const timeKey = formatTime(logDate.toDate());
+                const timeKey = logDate.format('HH:mm:ss');
                 result[formattedDate].time[timeKey] = record.C1;
+                attendanceDates.add(formattedDate); 
             }
         });
 
+        // Fill in missing dates in the result
+        let current = startDate.clone();
+
+        while (current.isSameOrBefore(adjustedEndDate)) {
+            const formattedDate = formatDate(current.toDate());
+            
+            if (!attendanceDates.has(formattedDate)) {
+                result[formattedDate] = {
+                    date: formattedDate,
+                    time: {}
+                };
+            }
+            current.add(1, 'day'); // Move to the next day
+        }
+
+        // Convert the result object to an array and sort by date
         let finalResult = Object.values(result);
         finalResult.sort((a, b) => moment(b.date, "DD-MM-YYYY").diff(moment(a.date, "DD-MM-YYYY")));
 
-        return {status:true,data:finalResult};
+        return { status: true, data: finalResult };
     } catch (error) {
         return { status: false, message: 'Error fetching punch data' };
     }
 }
 
-
-module.exports = punchData
-
-
+module.exports = punchData;

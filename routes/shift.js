@@ -18,29 +18,7 @@ async function getShiftTimes(shiftName) {
         });
     });
     
-    // try {
-    //   const sql = 'SELECT start_time, end_time FROM shift WHERE shift_name = ?';
-      
-    //   con.query(sql, [shiftName], (err, result) => {
-    //     if (err) {
-    //         return reject({ status: false, message: 'Error in database query', error: err });
-    //     }
 
-    //     if (results.length > 0) {
-    //         resolve({ status: true, empDetails: results[0] });
-    //     } else {
-    //         resolve({ status: false, message: 'No record found for the given campus and bio_id' });
-    //     }
-    //     });
-  
-     
-  
-    // } catch (error) {
-    //   return {
-    //     status: false,
-    //     message: error.message
-    //   };
-    // }
   }
 
   module.exports = getShiftTimes
