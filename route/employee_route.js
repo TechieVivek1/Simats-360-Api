@@ -18,4 +18,15 @@ router.post('/userInfo',userInfo)
 const  home = require('../routes/home')
 router.post('/home',home)
 
+
+const attendance =  require('../routes/attendance')
+router.post('/attendance',attendance);
+
+const attendanceResvised =  require('../routes/logicfromphpAttendance');
+router.post('/attendanceRevised',attendanceResvised);
+
+const homeDetailsInfo = require('../routes/homeDetails')
+router.post('/homeDetails',homeDetailsInfo)
+
+
 module.exports = router
