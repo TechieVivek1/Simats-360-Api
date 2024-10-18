@@ -154,6 +154,8 @@ const attendanceRevised = (req, res) => {
                 // Prepare attendance response for this date
                 // You can store or return this response as needed
               });
+          processAttendanceData(data, employeeShift, initialBufferTime);
+
 
               // Respond with attendance summary
               res.json({
@@ -169,7 +171,6 @@ const attendanceRevised = (req, res) => {
           };
 
           // Calling the function to process attendance data
-          processAttendanceData(data, employeeShift, initialBufferTime);
         })
         .catch(() => {
           res.status(500).json({ message: 'Error fetching attendance data' });
