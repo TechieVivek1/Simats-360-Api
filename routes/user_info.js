@@ -41,9 +41,10 @@ const  userInfo = async (req,res)=>{
         return res.status(200).json({
             status: 200,
             message: 'User info fetched successfully',
+            internalExp: ""+empDetailsResultData.internal_experience === null || empDetailsResultData.internal_experience === "null" ? "" : empDetailsResultData.internal_experience,
+            externalExp: ""+empDetailsResultData.external_experience === null || empDetailsResultData.external_experience === "null" ? "" : empDetailsResultData.external_experience,
             data: results,
-            internalExp: empDetailsResultData.internal_experience === null || empDetailsResultData.internal_experience === "null" ? "" : empDetailsResultData.internal_experience,
-            externalExp: empDetailsResultData.external_experience === null || empDetailsResultData.external_experience === "null" ? "" : empDetailsResultData.external_experience
+           
         });
         
         
