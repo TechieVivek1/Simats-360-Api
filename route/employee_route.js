@@ -28,5 +28,7 @@ router.post('/attendanceRevised',attendanceResvised);
 const homeDetailsInfo = require('../routes/homeDetails')
 router.post('/homeDetails',homeDetailsInfo)
 
+const monthlySalary = require('../routes/monthlySalaryReport')
+router.post('/monthlySalaryReport',monthlySalary)
 
 module.exports = router

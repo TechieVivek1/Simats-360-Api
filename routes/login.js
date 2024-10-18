@@ -41,7 +41,8 @@ const loginUser = (req, res) => {
         const userData = results.map(row => ({
             campus: row.campus,
             category: row.category,
-            bioId: row.bio_id
+            bioId: row.bio_id,
+            userName: row.employee_name
         }))
 
 
