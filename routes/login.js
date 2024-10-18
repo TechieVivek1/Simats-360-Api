@@ -18,7 +18,7 @@ const loginUser = (req, res) => {
         });
     }
 
-    const sql = 'SELECT * FROM emp_ref WHERE bio_id = ?';
+    const sql = 'SELECT * FROM emp_ref as e JOIN profileimages p ON e.bio_id = p.bio_id WHERE e.bio_id = ?';
 
     db.query(sql, [bioId], (err, results) => {
 
@@ -41,7 +41,8 @@ const loginUser = (req, res) => {
         const userData = results.map(row => ({
             campus: row.campus,
             category: row.category,
-            bioId: row.bio_id
+            bioId: row.bio_id,
+            profileImgUrl : "http://180.235.121.247/uploads/"+row.profileImg
         }))
 
 

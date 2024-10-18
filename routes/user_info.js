@@ -13,7 +13,7 @@ const  userInfo = async (req,res)=>{
         return res.status(400).json({message: 'campus is required'})
     }
     
-    let  query = `SELECT ed.internal_experience,ed.external_experience,e.campus,e.employee_name,e.category,e.dob,e.doj,e.phone,e.email,e.address,CONCAT('http://180.235.121.247/uploads/', p.profileImg) AS profileImageURL,e.bio_id,e.staff_id,e.designation_id,d.designation_name FROM emp_ref e JOIN profileimages p ON e.bio_id = p.bio_id JOIN designation d ON e.designation_id = d.designation_id join employee_details ed on e.bio_id = ed.bio_id WHERE e.bio_id = ?;`
+    let  query = `SELECT ed.internal_experience, ed.external_experience, e.campus, e.employee_name, e.category, DATE_FORMAT(e.dob, '%Y-%m-%d') AS dob, DATE_FORMAT(e.doj, '%Y-%m-%d') AS doj, e.phone, e.email, e.address, CONCAT('http://180.235.121.247/uploads/', p.profileImg) AS profileImageURL, e.bio_id, e.staff_id, e.designation_id, d.designation_name FROM emp_ref e JOIN profileimages p ON e.bio_id = p.bio_id JOIN designation d ON e.designation_id = d.designation_id JOIN employee_details ed ON e.bio_id = ed.bio_id WHERE e.bio_id = ?;`
 
     con.query(query,[bio_id], async (err, results,fields) => {
         if (err) {

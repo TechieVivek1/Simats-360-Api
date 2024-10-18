@@ -28,5 +28,7 @@ router.post('/attendanceRevised',attendanceResvised);
 const homeDetailsInfo = require('../routes/homeDetails')
 router.post('/homeDetails',homeDetailsInfo)
 
+const homeCopy  = require('../routes/homeCopy')
+router.post('/homeCopy',homeCopy)
 
 module.exports = router
