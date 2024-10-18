@@ -31,4 +31,7 @@ router.post('/homeDetails',homeDetailsInfo)
 const homeCopy  = require('../routes/homeCopy')
 router.post('/homeCopy',homeCopy)
 
+const monthlySalary = require('../routes/monthlySalaryReport')
+router.post('/monthlySalaryReport',monthlySalary)
+
 module.exports = router

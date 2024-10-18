@@ -42,7 +42,11 @@ const loginUser = (req, res) => {
             campus: row.campus,
             category: row.category,
             bioId: row.bio_id,
+<<<<<<< HEAD
             profileImgUrl : "http://180.235.121.247/uploads/"+row.profileImg
+=======
+            userName: row.employee_name
+>>>>>>> 22118406f7997c4a5f8072a98403ceeb3ac9964d
         }))
 
 
