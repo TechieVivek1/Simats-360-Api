@@ -46,7 +46,6 @@ const homeInfo = async (req, res) => {
             }
         }
 
-
         res.json({
             punch: punchResultData,
             empDetails: empDetailsResultData,
