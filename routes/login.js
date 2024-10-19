@@ -42,7 +42,9 @@ const loginUser = (req, res) => {
             campus: row.campus,
             category: row.category,
             bioId: row.bio_id,
-            profileImgUrl : "http://180.235.121.247/uploads/"+row.profileImg
+            profileImgUrl : "http://180.235.121.247/uploads/"+row.profileImg,
+            userName: row.employee_name
+
         }))
 
 
