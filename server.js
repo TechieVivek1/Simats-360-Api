@@ -7,12 +7,12 @@ require('dotenv').config()
 
 app.use(express.json())
 app.use(body.json())
-// app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true }));
 
 const port = process.env.PORT || 2000;
 
 try{
-  con.connect((err)=>{
+  con.connect((err) => {
 
     if (err) {
      return console.log(err)
