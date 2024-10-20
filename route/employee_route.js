@@ -34,4 +34,16 @@ router.post('/homeCopy',homeCopy)
 const monthlySalary = require('../routes/monthlySalaryReport')
 router.post('/monthlySalaryReport',monthlySalary)
 
+//get available leave
+const getAvailableLeave = require('../routes/get_employee_leaves')
+router.post('/getAvailableLeave', getAvailableLeave)
+
+//get leave recors
+const getLeaveRecords = require('../routes/get_leave_recors')
+router.post('/getLeaveRecords', getLeaveRecords)
+
+//apply leave
+const applyLeave = require('../routes/apply_leave')
+router.post('/applyLeave', applyLeave)
+
 module.exports = router
