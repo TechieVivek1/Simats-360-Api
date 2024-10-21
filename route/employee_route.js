@@ -34,12 +34,10 @@ router.post('/homeCopy',homeCopy)
 const monthlySalary = require('../routes/monthlySalaryReport')
 router.post('/monthlySalaryReport',monthlySalary)
 
-<<<<<<< HEAD
 const fetchHolidays = require('../routes/fetchHolidays')
 router.post('/fetchHolidays',fetchHolidays)
 
 module.exports = router
-=======
 //get available leave
 const getAvailableLeave = require('../routes/get_employee_leaves')
 router.post('/getAvailableLeave', getAvailableLeave)
@@ -52,5 +50,6 @@ router.post('/getLeaveRecords', getLeaveRecords)
 const applyLeave = require('../routes/apply_leave')
 router.post('/applyLeave', applyLeave)
 
+
+
 module.exports = router
->>>>>>> 4698f5d9d23282eb009b20b5b03d28b27bc30e3d
