@@ -96,7 +96,7 @@ const  applyLeave = async (req, res) => {
         })
         
             
-            })
+    })
 }
 
 module.exports  = applyLeave;

@@ -14,7 +14,6 @@ async function fetchHolidays (req,res){
         if(err){
             res.status(500).json({error:err})
         } 
-
         res.status(200).json({status:true,data:result})
     })
 }
