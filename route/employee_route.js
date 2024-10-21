@@ -37,7 +37,6 @@ router.post('/monthlySalaryReport',monthlySalary)
 const fetchHolidays = require('../routes/fetchHolidays')
 router.post('/fetchHolidays',fetchHolidays)
 
-module.exports = router
 //get available leave
 const getAvailableLeave = require('../routes/get_employee_leaves')
 router.post('/getAvailableLeave', getAvailableLeave)
