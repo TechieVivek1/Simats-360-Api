@@ -36,13 +36,13 @@ async function getHolidaysForCampus(campus) {
             if (results.length > 0) {
                 const holidays = results.map(row => {
                     // Log the raw date fetched from the database
-                    console.log("Raw date from database:", row.date);
+                    // console.log("Raw date from database:", row.date);
                     
                     // Create a new Date object from the raw date
                     const utcDate = new Date(row.date);
                     
                     // Log the original UTC date for debugging
-                    console.log("Original UTC Date:", utcDate);
+                    // console.log("Original UTC Date:", utcDate);
 
                     // Add one day to the date
                     utcDate.setDate(utcDate.getDate() + 1);
@@ -51,7 +51,7 @@ async function getHolidaysForCampus(campus) {
                     const formattedDate = utcDate.toISOString().split('T')[0];
 
                     // Log the adjusted date for debugging
-                    console.log("Adjusted formatted date (after adding one day):", formattedDate);
+                    // console.log("Adjusted formatted date (after adding one day):", formattedDate);
 
                     return formattedDate;
                 });

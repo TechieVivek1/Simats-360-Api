@@ -251,8 +251,17 @@ async function calculateAttendanceC(punchResultData, holidayResultdata, shiftTot
                     inTime = 0
                     outTime = 0
 
+                    
+
                 } else {
-                    gsonData.push({date :punchDate,remainingBuff:adjustedBuffTime,exceed:inTime,early:outTime,status:"pending"})
+                    totalWorkingDays ++
+                    totalHalfWorkingDays++
+
+                    if(Object.keys(punch.time).length > 1){
+                        let times =  Object.keys(punch.time)
+                        let singlePunch = times[0];
+                    }
+                    gsonData.push({date :punchDate,remainingBuff:adjustedBuffTime,exceed:inTime,early:outTime,status:"halfday present"})
                 }
             } else{
                 absentDays++
@@ -343,33 +352,38 @@ async function calculateAttendanceC(punchResultData, holidayResultdata, shiftTot
     
 
 
-    console.log("percentage:" +attendancePercentage);
-    console.log("totalWorkingDays:" + totalWorkingDays);
+    // console.log("percentage:" +attendancePercentage);
+    // console.log("totalWorkingDays:" + totalWorkingDays);
     
 
-    console.log("holidays" +holidays);
+    // console.log("holidays" +holidays);
 
-    attendancePercentage =  (presentDays + totalHalfWorkingDays) / totalWorkingDays * 100
+    attendancePercentage =  (presentDays + totalHalfWorkingDays/2) / totalWorkingDays * 100
+
+    let totalPresent = presentDays  + totalHalfWorkingDays/2
 
 
 
-    return {presentDays,absentDays,totalHalfWorkingDays,weekoffDays,totalWorkingHours,adjustedBuffTime,gsonData,attendancePercentage}
+    return {totalPresent,presentDays,absentDays,totalHalfWorkingDays,weekoffDays,totalWorkingHours,adjustedBuffTime,gsonData,attendancePercentage}
 
 }
 
 const homeInfo = async (req, res) => {
-    const { bio_id, campus, category, year, month } = req.body;
+    const { bioId, campus, category, year, month } = req.body;
 
     // Input validation
-    if (!bio_id || !campus || !category || !year || !month) {
-        return res.status(400).json({ status: false, message: "All fields are required" });
+    if (!bioId || !campus || !category || !year || !month) {
+        return res.status(400).json({ status: false, message: "All fields are required" , error:"All fields are required" });
+
     }
+
+    let revisedMonth = month - 1
 
     try {
         // Fetch punch and employee details in parallel
         const [punchResult, empDetailsResult] = await Promise.all([
-            punchData(bio_id, year, month),
-            empDetailsData(campus, bio_id)
+            punchData(bioId, year, revisedMonth),
+            empDetailsData(campus, bioId)
         ]);
 
         let punchResultData = [];
@@ -422,13 +436,15 @@ const homeInfo = async (req, res) => {
 
 
     
-        const {presentDays,absentDays,totalHalfWorkingDays,weekoffDays,totalWorkingHours,adjustedBuffTime,gsonData,attendancePercentage} = await calculateAttendanceC(
+        const {totalPresent,presentDays,absentDays,totalHalfWorkingDays,weekoffDays,totalWorkingHours,adjustedBuffTime,gsonData,attendancePercentage} = await calculateAttendanceC(
             punchResultData, holidayResultdata, shiftTotalHours, shiftStartTime,shiftEndtime, buffResultsData
         );
 
         // const balanceBuffTime = buffResultsData - adjustedBuffTime;
 
-        res.json({presentDays,absentDays,totalHalfWorkingDays,weekoffDays,totalWorkingHours,adjustedBuffTime,gsonData,attendancePercentage})
+        res.status(200).json({status:true,message:"Home Data Fetched",data:{totalPresent,presentDays,absentDays,totalHalfWorkingDays,weekoffDays,totalWorkingHours,adjustedBuffTime,attendancePercentage
+        // ,gsonData
+        }})
 
     } catch (error) {
         res.status(500).json({ status: false, message: "Server error", error: error.message });
