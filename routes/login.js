@@ -44,10 +44,7 @@ const loginUser = (req, res) => {
             bioId: row.bio_id,
             profileImgUrl : "http://180.235.121.247/uploads/"+row.profileImg,
             userName: row.employee_name
-<<<<<<< HEAD
 
-=======
->>>>>>> 7c77bde (login changes)
         }))
 
 
