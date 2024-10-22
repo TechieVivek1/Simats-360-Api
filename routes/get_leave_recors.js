@@ -10,7 +10,8 @@ const  getLeaves = async (req, res) => {
     
     let  query = `SELECT leave_type   as leaveType, 
                          start_date   as startDate,
-                         end_date     as endDate, 
+                         end_date     as endDate,
+                         category,
                          status 
                   FROM apply_leave 
                   where bio_id = ? and campus = ?`;
