@@ -18,7 +18,7 @@ const loginUser = (req, res) => {
         });
     }
 
-    const sql = 'SELECT * FROM emp_ref as e JOIN profileimages p ON e.bio_id = p.bio_id join hierarchy_master h on e.bio_id= h.assigned_employee_id WHERE e.bio_id = ?';
+    const sql = 'SELECT * FROM emp_ref e LEFT JOIN profileimages p ON e.bio_id = p.bio_id LEFT JOIN hierarchy_master h ON e.bio_id = h.assigned_employee_id WHERE e.bio_id = ?';
 
     db.query(sql, [bioId], (err, results) => {
 
@@ -26,6 +26,15 @@ const loginUser = (req, res) => {
             console.error('Database error:', err);
             return res.status(500).json({ status: false, message: 'Internal server error', userData: results });
         }
+
+        if (results.category === "Non teaching") {
+            return  res.status(401).json({
+                status: false,
+                message: 'You are not authorized to access this page',
+                userData: []
+                });
+        }
+
 
         if (results.length === 0) {
             return res.status(401).json({
@@ -45,7 +54,7 @@ const loginUser = (req, res) => {
             profileImgUrl : "http://180.235.121.247/uploads/"+row.profileImg,
             userName: row.employee_name,
             headId:row.head_id,
-            role:row.role
+            role:row.role,
         }))
 
 
