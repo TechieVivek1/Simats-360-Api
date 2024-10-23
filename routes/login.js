@@ -27,13 +27,17 @@ const loginUser = (req, res) => {
             return res.status(500).json({ status: false, message: 'Internal server error', userData: results });
         }
 
-        if (results[0].category === "Non teaching") {
-            return  res.status(401).json({
-                status: false,
-                message: 'You are not authorized to access',
-                userData: []
+        if(results.length > 0 && results[0].category){
+            if (results[0].category === "Non teaching") {
+                return  res.status(401).json({
+                    status: false,
+                    message: 'You are not authorized to access',
+                    userData: []
                 });
+            }
         }
+
+       
 
 
         if (results.length === 0) {
