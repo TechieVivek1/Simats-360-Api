@@ -24,11 +24,11 @@ const getLeaves = async (req, res) => {
             return res.status(404).json({ status: false, message: 'No Data Found', data: [] });
         }
 
-        // Format the date to return only the date part
+        // Format the date to return only the date part in local timezone
         const formattedResults = results.map(leave => ({
             ...leave,
-            startDate: new Date(leave.startDate).toISOString().split('T')[0],  // Extract date part
-            endDate: new Date(leave.endDate).toISOString().split('T')[0]        // Extract date part
+            startDate: new Date(leave.startDate).toLocaleDateString('en-CA'),  // Format date to 'YYYY-MM-DD'
+            endDate: new Date(leave.endDate).toLocaleDateString('en-CA')      // Format date to 'YYYY-MM-DD'
         }));
 
         return res.status(200).json({
