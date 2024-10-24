@@ -53,4 +53,9 @@ router.post('/applyLeave', applyLeave)
 const monthlyBufferDetails = require('../routes/fetchMonthBufferDetails')
 router.post('/monthlyBufferDetails', monthlyBufferDetails)
 
+//HomeInfo
+
+const homeInfo = require('../routes/Homeinfo')
+router.post('/homeInfo', homeInfo)
+
 module.exports = router
