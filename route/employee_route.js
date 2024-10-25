@@ -58,4 +58,11 @@ router.post('/monthlyBufferDetails', monthlyBufferDetails)
 const homeInfo = require('../routes/Homeinfo')
 router.post('/homeInfo', homeInfo)
 
+const generalNotification = require('../routes/announcement_notifications')
+router.get('/generalNotification',generalNotification)
+
+
+const approvalNotification = require('../routes/approval_notification')
+router.post('/approvalNotification',approvalNotification)
+
 module.exports = router
