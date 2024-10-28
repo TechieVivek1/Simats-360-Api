@@ -65,4 +65,6 @@ router.get('/generalNotification',generalNotification)
 const approvalNotification = require('../routes/approval_notification')
 router.post('/approvalNotification',approvalNotification)
 
+const swapDutyNotification = require('../routes/swap_duty_notification')
+router.post('/swapDutyNotification',swapDutyNotification)
 module.exports = router
