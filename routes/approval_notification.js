@@ -3,19 +3,20 @@ const db = require('../config')
 
 const approvalNotification = (req,res) => {
     const {bioId} = req.body 
-    const fetchQuery = 'select * from notifications where notification_category = "approval" and notification_receiver_id = ?'
-    if (!bioId) {
+    const {campus} = req.body
+    const fetchQuery = 'select * from apply_leave a left join emp_ref e on a.bio_id = e.bio_id where a.campus = ? and a.assigned_head_id = ?'
+    if (!bioId || !campus) {
         return res.status(422).json({
             status: false,
-            messsage: "Parameter is missing",
+            message: "Parameter is missing",
             notificationData: []
         })
     }
-    db.query(fetchQuery,[bioId],(err,result) => {
+    db.query(fetchQuery,[campus,bioId],(err,result) => {
         if (err) {
             return res.status(500).json({
                 status: false,
-                messsage: `Internal Server Issue ${err.message}`,
+                message: `Internal Server Issue ${err.message}`,
                 notificationData: []
             })
         }
@@ -23,13 +24,13 @@ const approvalNotification = (req,res) => {
         if (result.length > 0) {
             return res.status(200).json({
                 status: true,
-                messsage: "Notification Fetched Successfully",
+                message: "Notification Fetched Successfully",
                 notificationData: result
             })
         } else {
             return res.status(200).json({
                 status: false,
-                messsage: "No Data Found",
+                message: "No Data Found",
                 notificationData: result
             })
         }

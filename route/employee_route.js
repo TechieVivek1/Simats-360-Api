@@ -73,6 +73,7 @@ router.get('/pendingDutyCount',pendingDutyCount)
 const  pendingDuty = require('../routes/pendingDuty')
 router.get('/pendingDuty',pendingDuty)
 
-
+const swapDutyNotification = require('../routes/swap_duty_notification')
+router.post('/swapDutyNotification',swapDutyNotification)
 
 module.exports = router
