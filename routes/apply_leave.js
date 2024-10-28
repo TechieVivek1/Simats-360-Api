@@ -41,7 +41,7 @@ const  applyLeave = async (req, res) => {
                 startDate, endDate, totalDays, headId, reason } = req.body
 
         if(!bioId || !campus || !leaveCategory || !leaveType || !startDate || !totalDays || !headId || !reason) {
-            return res.status(400).json({ status: false, message: 'Empty Fields', body:req.body})
+            return res.status(400).json({ status: false, message: 'Empty Fields'})
         }
 
         const fileName = req.files['file'] ? req.files['file'][0].filename : '';
@@ -49,6 +49,7 @@ const  applyLeave = async (req, res) => {
         if(leaveType === "half_day") {
             endDate    = "0000-00-00"
         } else {
+            endDate    = "0000-00-00"
             daySession = null;
         }
 
@@ -74,7 +75,7 @@ const  applyLeave = async (req, res) => {
 
             if(result.length != 0) {
                 return res.status(409).json({
-                    status  : true,
+                    status  : false,
                     message : 'Leave Already Applied'
                 });
             }
