@@ -7,7 +7,7 @@ const approvalNotification = (req,res) => {
     if (!bioId) {
         return res.status(422).json({
             status: false,
-            messsage: "Parameter is missing",
+            message: "Parameter is missing",
             notificationData: []
         })
     }
@@ -15,7 +15,7 @@ const approvalNotification = (req,res) => {
         if (err) {
             return res.status(500).json({
                 status: false,
-                messsage: `Internal Server Issue ${err.message}`,
+                message: `Internal Server Issue ${err.message}`,
                 notificationData: []
             })
         }
@@ -23,13 +23,13 @@ const approvalNotification = (req,res) => {
         if (result.length > 0) {
             return res.status(200).json({
                 status: true,
-                messsage: "Notification Fetched Successfully",
+                message: "Notification Fetched Successfully",
                 notificationData: result
             })
         } else {
             return res.status(200).json({
                 status: false,
-                messsage: "No Data Found",
+                message: "No Data Found",
                 notificationData: result
             })
         }
