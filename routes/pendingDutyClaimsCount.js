@@ -8,8 +8,7 @@ const getPendingClaimsCount = (req, res) => {
     }
 
     const pendingCountQuery = `
-        SELECT COUNT(*) AS pending_count 
-        FROM duty_details 
+        SELECT startdate FROM duty_details 
         WHERE bio_id LIKE ? 
           AND claim_credits = 'No' 
           AND startdate >= DATE_FORMAT(CURDATE(), '%Y-%m-20') 
@@ -18,14 +17,13 @@ const getPendingClaimsCount = (req, res) => {
 
         con.query(pendingCountQuery,[bioId],(err,result)=>{
             if(err) {
-                res.status(500).json({status:false,message:`Error Fetching  Pending Count${err.message}`,pendingCount:0});
+                res.status(500).json({status:false,message:`Error Fetching  Pending Count${err.message}`,claimsData: result});
             }
 
             if (result.length > 0) {
-                res.status(200).json({ status:true,message:"Pending Duty Count Fetched Successfully",pendingCount:result[0].pending_count });  
+                res.status(200).json({ status:true,message:"Pending Duty Count Fetched Successfully",claimsData: result});  
             } else {
-
-                res.status(200).json({ status:false,message:"No Pending Duty Count",pendingCount:result[0].pending_count });
+                res.status(200).json({ status:false,message:"No Pending Duty Count",claimsData: result });
             }
         })
 
