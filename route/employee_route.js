@@ -65,9 +65,9 @@ router.get('/generalNotification',generalNotification)
 const approvalNotification = require('../routes/approval_notification')
 router.post('/approvalNotification',approvalNotification)
 
-//pendingCount 
-const  pendingDutyCount = require('../routes/pendingDutyCount')
-router.get('/pendingDutyCount',pendingDutyCount)
+//pendingDutyClaimsCount 
+const  pendingDutyClaimsCount = require('../routes/pendingDutyClaimsCount')
+router.get('/pendingDutyClaimsCount',pendingDutyClaimsCount)
 
 // pending Duty
 const  pendingDuty = require('../routes/pendingDuty')
@@ -75,5 +75,8 @@ router.get('/pendingDuty',pendingDuty)
 
 const swapDutyNotification = require('../routes/swap_duty_notification')
 router.post('/swapDutyNotification',swapDutyNotification)
+
+const pendingDutyCount = require('../routes/pendingDutyCounts')
+router.get('/pendingDutyCount',pendingDutyCount)
 
 module.exports = router

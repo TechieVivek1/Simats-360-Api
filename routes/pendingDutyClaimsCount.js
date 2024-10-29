@@ -1,7 +1,11 @@
 const con = require('../config');
 
-const getPendingCount = (req, res) => {
+const getPendingClaimsCount = (req, res) => {
     const { bioId } = req.body;
+
+    if (!bioId) {
+        return res.status(400).json({ message: 'Missing bioId' });
+    }
 
     const pendingCountQuery = `
         SELECT COUNT(*) AS pending_count 
@@ -28,4 +32,4 @@ const getPendingCount = (req, res) => {
 };
 
 
-module.exports = getPendingCount
+module.exports = getPendingClaimsCount

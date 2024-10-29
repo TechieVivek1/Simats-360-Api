@@ -3,7 +3,11 @@ const con = require('../config');
 const getPendingCount = (req, res) => {
     const { bioId } = req.body;
 
-    const pendingDuty = "SELECT startdate, shift, total_hours, duty_swipe, swipe_details, duty_status FROM duty_details WHERE bio_id LIKE 18728 AND claim_credits = 'No' ORDER BY `duty_details`.`startdate` ASC";
+    if (!bioId) {
+        return res.status(400).json({ message: 'Missing bioId' });
+    }
+
+    const pendingDuty = "SELECT startdate, shift, total_hours, duty_swipe, swipe_details, duty_status FROM duty_details WHERE bio_id = ? AND claim_credits = 'No' and duty_status = 'Pending' ORDER BY `duty_details`.`startdate` ASC";
 
         con.query(pendingDuty,[bioId],(err,result)=>{
             if(err) {
