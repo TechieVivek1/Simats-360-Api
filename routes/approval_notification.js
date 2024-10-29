@@ -4,7 +4,7 @@ const db = require('../config')
 const approvalNotification = (req,res) => {
     const {bioId} = req.body 
     const {campus} = req.body
-    const fetchQuery = 'select * from apply_leave a left join emp_ref e on a.bio_id = e.bio_id where a.campus = ? and a.assigned_head_id = ?'
+    const fetchQuery = 'select * ,a.category as leaveCategory from apply_leave a left join emp_ref e on a.bio_id = e.bio_id where a.campus = ? and a.assigned_head_id = ?'
     if (!bioId || !campus) {
         return res.status(422).json({
             status: false,

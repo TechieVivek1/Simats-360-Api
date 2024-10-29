@@ -71,7 +71,7 @@ router.get('/pendingDutyClaimsCount',pendingDutyClaimsCount)
 
 // pending Duty
 const  pendingDuty = require('../routes/pendingDuty')
-router.get('/pendingDuty',pendingDuty)
+router.post('/pendingDuty',pendingDuty)
 
 const swapDutyNotification = require('../routes/swap_duty_notification')
 router.post('/swapDutyNotification',swapDutyNotification)
