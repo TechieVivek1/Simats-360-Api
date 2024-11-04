@@ -51,16 +51,31 @@ const dutyClaims = (req, res) => {
                         return res.status(500).json({
                             status: false,
                             message: "Internal server Error while updating casual leave limit.",
-                            isClaimed: true, // The claim was recorded, but updating failed
+                            isClaimed: false, // The claim was recorded, but updating failed
                         });
                     }
 
-                    // Respond with success after both operations
+                    const updateDutyDetaisQuery = 'update duty_details set claim_credits = "Yes" where bio_id = ? and campus = ?';
+
+                    db.query(updateDutyDetaisQuery,[bioId,campus],(err,updateDutyResult)=>{
+                        if(err){
+                            return res.status(500).json({ 
+                                status:false,
+                                message:"Internal server Error while updating duty details.",
+                                isClaimed:false // The claim was recorded, but updating failed
+                            })
+                        }
+
+                         // Respond with success after both operations
                     return res.status(201).json({
                         status: true,
                         message: "Duty claim recorded successfully and casual leave limit updated.",
                         isClaimed: true,
                     });
+                    
+                    })
+
+                   
                 });
             } else {
                 // Handle the case where the insert didn't affect any rows
