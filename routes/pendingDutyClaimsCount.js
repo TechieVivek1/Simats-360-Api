@@ -11,9 +11,7 @@ const getPendingClaimsCount = (req, res) => {
         SELECT startdate FROM duty_details 
         WHERE bio_id LIKE ? 
           AND claim_credits = 'No' 
-          AND startdate >= DATE_FORMAT(CURDATE(), '%Y-%m-20') 
-          AND startdate < DATE_ADD(DATE_FORMAT(CURDATE(), '%Y-%m-20'), INTERVAL 1 MONTH) 
-        ORDER BY startdate ASC`;
+          And duty_status = 'Completed'`;
 
         con.query(pendingCountQuery,[bioId],(err,result)=>{
             if(err) {
