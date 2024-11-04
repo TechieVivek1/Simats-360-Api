@@ -9,7 +9,7 @@ const getPendingClaimsCount = (req, res) => {
 
     const pendingCountQuery = `
         SELECT startdate FROM duty_details 
-        WHERE bio_id LIKE ? 
+        WHERE bio_id = ? 
           AND claim_credits = 'No' 
           And duty_status = 'Completed'`;
 
