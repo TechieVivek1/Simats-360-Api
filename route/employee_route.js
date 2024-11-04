@@ -82,4 +82,9 @@ router.post('/pendingDutyCount',pendingDutyCount)
 const dutyClaims = require('../routes/dutyClaims')
 router.post('/dutyClaims',dutyClaims)
 
+
+// group Options
+const groupOptions = require('../routes/groupOptions')
+router.post('/groupOptions',groupOptions)
+
 module.exports = router
