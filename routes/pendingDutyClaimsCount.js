@@ -10,8 +10,9 @@ const getPendingClaimsCount = (req, res) => {
     const pendingCountQuery = `
         SELECT id as dutyId,startdate as startDate FROM duty_details 
         WHERE bio_id = ? 
-          AND claim_credits = 'No' 
-          And duty_status = 'Completed'`;
+        AND claim_credits = 'No'
+        and exchange_status != 'Approved' 
+        And duty_status = 'Completed'`;
 
         con.query(pendingCountQuery,[bioId],(err,result)=>{
             if(err) {

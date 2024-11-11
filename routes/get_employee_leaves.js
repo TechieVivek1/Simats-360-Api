@@ -12,7 +12,9 @@ const  leaveInfo = async (req, res) => {
                     casual_leave_limit   as casualLeave, 
                     sick_leave_limit     as sickLeave, 
                     earned_leave_limit   as earnedLeave, 
-                    academic_leave_limit as academicLeave 
+                    academic_leave_limit as academicLeave,
+                    vacation_leave_limit as vacationLeave,
+                    restricted_holiday_limit as restrictedLeave
                     from available_leave 
                     where bio_id = ? 
                     and campus   = ?

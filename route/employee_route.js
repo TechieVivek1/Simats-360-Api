@@ -101,4 +101,8 @@ router.post('/leaveApproval',leaveApproval)
 const swapApproval = require('../routes/swapApproval')
 router.post('/swapApproval',swapApproval)
 
+// apply leave modified
+const applyLeaveModified = require('../routes/applyLeaveModified')
+router.post('/applyLeaveModified',applyLeaveModified)
+
 module.exports = router

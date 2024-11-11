@@ -81,6 +81,8 @@ async function applyLeave({category,startDate,endDate,halfDaySession,reason,
             [campus, bio_id]
         );
         const availableLimit = leaveLimitRow[formattedCategory];
+        console.log(formattedCategory);
+        
 
         if (totalDays > availableLimit) {
             throw new Error('You do not have enough leave balance.');

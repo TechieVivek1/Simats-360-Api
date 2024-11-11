@@ -2,7 +2,7 @@ const express = require('express');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
-const pool = require('../config'); // Using your MySQL configuration.
+const pool = require('../config'); // Importing pool from your config.
 
 const demoFileDir = path.join(__dirname, 'uploads');
 
@@ -24,7 +24,6 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-// Wraps the MySQL query in a Promise
 const query = (sql, params) => {
     return new Promise((resolve, reject) => {
         pool.query(sql, params, (error, results) => {
@@ -40,19 +39,12 @@ const applyLeave = async (req, res) => {
             return res.status(400).json({ status: false, message: err.message });
         }
 
-        let { campus, bioId, leaveCategory, leaveType, daySession, startDate, endDate, reason ,headId} = req.body;
+        let { campus, bioId, leaveCategory, leaveType, daySession, startDate, endDate, reason } = req.body;
         let file = req.file ? req.file.filename : null;
 
-        if (!bioId || !campus || !leaveCategory || !leaveType || !startDate || !reason || !headId) {
+        if (!bioId || !campus || !leaveCategory || !leaveType || !startDate || !reason) {
             return res.status(400).json({ status: false, message: 'Empty Fields' });
         }
-
-        const connection = await new Promise((resolve, reject) => {
-            pool.getConnection((err, connection) => {
-                if (err) reject(err);
-                else resolve(connection);
-            });
-        });
 
         try {
             await query('START TRANSACTION');
@@ -116,7 +108,7 @@ const applyLeave = async (req, res) => {
                 [campus, bioId]
             );
             const availableLimit = availableLeaveResult[0][formattedCategory];
-            const totalDays = leaveType === 'half_day' ? 0.5 : 1;
+            const totalDays = leaveType === 'half_day' ? 0.5 : Math.ceil((new Date(endDate) - new Date(startDate)) / (1000 * 60 * 60 * 24)) + 1;
 
             if (totalDays > availableLimit) {
                 return res.status(403).json({ status: false, message: 'Insufficient leave balance' });
@@ -124,15 +116,13 @@ const applyLeave = async (req, res) => {
 
             // Check overlapping leave requests
             const overlapResult = await query(`
-                SELECT COUNT(*) as count FROM apply_leave 
-                WHERE bio_id = ? AND campus = ? AND status != 'Rejected' 
-                AND (
-                    (? BETWEEN start_date AND end_date) 
-                    OR (? BETWEEN start_date AND end_date)
-                    OR (start_date BETWEEN ? AND ?)
-                    OR (end_date BETWEEN ? AND ?)
-                )`,
-                [bioId, campus, startDate, endDate, startDate, endDate, startDate, endDate]
+                SELECT COUNT(*) as count
+                FROM apply_leave
+                WHERE bio_id = ? 
+                AND campus = ? 
+                AND status != 'Rejected' 
+                AND start_date = ?`,
+                [bioId, campus, startDate]
             );
             if (overlapResult[0].count > 0) {
                 return res.status(409).json({ status: false, message: 'Leave application overlaps with existing leave' });
@@ -142,7 +132,7 @@ const applyLeave = async (req, res) => {
             await query(`
                 INSERT INTO apply_leave (bio_id, category, leave_type, half_day_session, start_date, end_date, total_days, reason, file, campus, assigned_head_id, status) 
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Pending')`,
-                [bioId, leaveCategory, leaveType, daySession, startDate, endDate, totalDays, reason, file ? `uploads/${file}` : null, campus, headId]
+                [bioId, leaveCategory, leaveType, daySession, startDate, endDate, totalDays, reason, file ? `uploads/${file}` : null, campus, req.body.headId]
             );
 
             await query('COMMIT');
@@ -150,8 +140,6 @@ const applyLeave = async (req, res) => {
         } catch (error) {
             await query('ROLLBACK');
             res.status(500).json({ status: false, message: 'Server Error', error: error.message });
-        } finally {
-            connection.release();
         }
     });
 };
