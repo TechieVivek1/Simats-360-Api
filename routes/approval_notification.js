@@ -15,7 +15,8 @@ const approvalNotification = (req, res) => {
             a.category AS leaveCategory, 
             a.start_date,
             a.reason,
-            e.profileImg 
+            e.profileImg,
+            a.leave_type as leaveType
         FROM 
             apply_leave a 
         LEFT JOIN 

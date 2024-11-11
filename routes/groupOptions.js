@@ -4,9 +4,9 @@ const getEmployeeOptions = (req, res) => {
   const { bioId, campus } = req.body;
 
   // Validate bioId and campus inputs
-  if (!bioId || typeof bioId !== 'number') {
-    return res.status(400).json({ status: false, message: 'Invalid or missing bio_id', data: {} });
-  }
+  // if (!bioId || typeof bioId !== 'number') {
+  //   return res.status(400).json({ status: false, message: 'Invalid or missing bio_id', data: {} });
+  // }
   if (!campus || typeof campus !== 'string' || campus.trim() === '') {
     return res.status(400).json({ status: false, message: 'Invalid or missing campus', data: {} });
   }
