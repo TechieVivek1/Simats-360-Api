@@ -2,6 +2,7 @@ const express = require('express')
 const app = express()
 const body = require('body-parser')
 const con = require('./config')
+const uploadPath = './routes/uploads'
 
 require('dotenv').config()
 
@@ -45,6 +46,8 @@ app.get('/', function (req, res) {
     "status": true,
     "message" : "Simats 360"})
 })
+
+app.use('/uploads', express.static(uploadPath));
 
 app.listen(port, function(){
   console.log(`Server is running on port ${port}`) 

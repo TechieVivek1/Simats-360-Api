@@ -9,8 +9,7 @@ const getPendingDutyCount = (req, res) => {
 
     const pendingCountQuery = `
         SELECT COUNT(*) AS pending_count 
-        FROM duty_details where
-        bio_id = ? AND claim_credits = 'No' and duty_status = 'Pending'`;
+        FROM duty_details WHERE bio_id = ? and claim_credits = 'No' and exchange_status='Pending'or exchange_status='Rejected' and duty_status = 'Pending';`;
 
         // SELECT startdate, shift, total_hours, duty_swipe, swipe_details, duty_status FROM duty_details WHERE bio_id = ? AND claim_credits = 'No' and duty_status = 'Pending' ORDER BY `duty_details`.`startdate` ASC"
 

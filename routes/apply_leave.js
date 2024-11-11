@@ -81,7 +81,7 @@ const  applyLeave = async (req, res) => {
             }
 
             con.query(query, [ campus, bioId, leaveCategory, leaveType, daySession, startDate, endDate,
-                totalDays, headId, reason, fileName ], async (err, results, fields) => {
+                totalDays, headId, reason, "uploads/"+fileName ], async (err, results, fields) => {
         
                 if (err) {
                     return res.status(500).json({ status: false, message: 'Server Error', error:err.message });

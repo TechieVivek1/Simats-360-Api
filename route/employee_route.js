@@ -42,7 +42,7 @@ const getAvailableLeave = require('../routes/get_employee_leaves')
 router.post('/getAvailableLeave', getAvailableLeave)
 
 //get leave recors
-const getLeaveRecords = require('../routes/get_leave_recors')
+const getLeaveRecords = require('../routes/get_leave_records')
 router.post('/getLeaveRecords', getLeaveRecords)
 
 //apply leave
@@ -54,7 +54,6 @@ const monthlyBufferDetails = require('../routes/fetchMonthBufferDetails')
 router.post('/monthlyBufferDetails', monthlyBufferDetails)
 
 //HomeInfo
-
 const homeInfo = require('../routes/Homeinfo')
 router.post('/homeInfo', homeInfo)
 
@@ -82,9 +81,24 @@ router.post('/pendingDutyCount',pendingDutyCount)
 const dutyClaims = require('../routes/dutyClaims')
 router.post('/dutyClaims',dutyClaims)
 
-
 // group Options
 const groupOptions = require('../routes/groupOptions')
 router.post('/groupOptions',groupOptions)
+
+// duty Roster
+const dutyRoster = require('../routes/dutyRoster')
+router.post('/dutyRoster',dutyRoster)
+
+// swap duty
+const swapDuty = require('../routes/swapDuty')
+router.post('/swapDuty',swapDuty)
+
+// leave approval
+const leaveApproval = require('../routes/leaveApproval')
+router.post('/leaveApproval',leaveApproval)
+
+// swapApproval
+const swapApproval = require('../routes/swapApproval')
+router.post('/swapApproval',swapApproval)
 
 module.exports = router

@@ -1,13 +1,13 @@
 const db = require('../config');
 
 const dutyClaims = (req, res) => {
-    const { campus, bioId, dutyDate, creditName } = req.body;
+    const { campus, bioId, dutyDate, creditName ,dutyId} = req.body;
 
     // Validate required fields
-    if (!campus || !bioId || !dutyDate || !creditName) {
+    if (!campus || !bioId || !dutyDate || !creditName || !dutyId) {
         return res.status(400).json({
             status: false,
-            message: "Missing required fields: campus, bioId, dutyDate, or creditName"
+            message: "Missing required fields: campus, bioId, dutyDate, dutyId, or creditName"
         });
     }
 
@@ -22,16 +22,14 @@ const dutyClaims = (req, res) => {
             });
         }
 
-        // If a duplicate record exists, respond accordingly
         if (results.length > 0) {
             return res.status(409).json({
                 status: false,
-                message: "Duty claim already exists for the given bioId and dutyDate.",
+                message: "Duty already claimed.",
                 isClaimed: false,
             });
         }
 
-        // If no duplicate, proceed to insert the new record
         const insertQuery = 'INSERT INTO duty_credits_history (campus, bio_id, duty_date, credit_name) VALUES (?, ?, ?, ?)';
         db.query(insertQuery, [campus, bioId, dutyDate, creditName], (err, result) => {
             if (err) {
@@ -55,23 +53,22 @@ const dutyClaims = (req, res) => {
                         });
                     }
 
-                    const updateDutyDetaisQuery = 'update duty_details set claim_credits = "Yes" where bio_id = ? and campus = ?';
+                    const updateDutyDetaisQuery = 'update duty_details set claim_credits = "Yes" where id = ?';
 
-                    db.query(updateDutyDetaisQuery,[bioId,campus],(err,updateDutyResult)=>{
+                    db.query(updateDutyDetaisQuery,[dutyId],(err,updateDutyResult)=>{
                         if(err){
                             return res.status(500).json({ 
                                 status:false,
                                 message:"Internal server Error while updating duty details.",
-                                isClaimed:false // The claim was recorded, but updating failed
+                                isClaimed:false 
                             })
                         }
 
-                         // Respond with success after both operations
-                    return res.status(201).json({
-                        status: true,
-                        message: "Duty claim recorded successfully and casual leave limit updated.",
-                        isClaimed: true,
-                    });
+                        return res.status(201).json({
+                            status: true,
+                            message: "Duty claim recorded successfully and casual leave limit updated.",
+                            isClaimed: true,
+                        });
                     
                     })
 
