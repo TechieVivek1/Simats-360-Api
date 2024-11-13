@@ -14,7 +14,7 @@ const DutySwap = (req, res) => {
         SELECT id AS swapId, employee_name AS empName, shift, swipe_details AS swipesData, 
                contact, duty_status AS dutyStatus, updated_at AS date 
         FROM duty_details 
-        WHERE duty_exchanged = "YES" AND request_to = ?
+        WHERE duty_exchanged = "YES" AND request_to = ? and exchange_status = 'Pending'
     `;
 
     db.query(swapQuery, [bioId], (err, result) => {

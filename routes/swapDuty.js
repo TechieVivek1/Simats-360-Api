@@ -7,7 +7,7 @@ const updateDutyExchange = (req, res) => {
     return res.status(400).json({ status: false, message: 'Invalid or missing fields', data: {} });
   }
 
-  const query = `UPDATE duty_details SET duty_exchanged = 'Yes', request_from = ?, request_to = ? WHERE id = ?`;
+  const query = `UPDATE duty_details SET duty_exchanged = 'Yes', request_from = ?, request_to = ?,exchange_status = 'Pending' WHERE id = ?`;
   const params = [requestFrom, requestTo, id];
 
   con.query(query, params, (err, result) => {

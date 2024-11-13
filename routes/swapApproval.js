@@ -14,7 +14,6 @@ module.exports = swapApproval = (req, res) => {
     con.query(query, params, (err, result) => {
 
         if (err) {
-            // console.error("Database query error:", err);
             return res.status(500).json({ status: false, message: 'Error updating swap', error: err });
         }
 

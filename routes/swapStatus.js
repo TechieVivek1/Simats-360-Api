@@ -10,8 +10,6 @@ const DutySwap = (req, res) => {
         });
     }
 
-    // pending need to be update query
-
     const swapQuery = `
         SELECT id AS swapId, employee_name AS empName, shift, swipe_details AS swipesData, 
                contact, duty_status AS dutyStatus, updated_at AS date 
@@ -29,10 +27,9 @@ const DutySwap = (req, res) => {
         }
 
         if (result.length > 0) {
-            // Process swipe details and format date for each result item
             result.forEach(item => {
                 item.swipesData = parseSwipeDetails(item.swipesData);
-                item.date = formatToLocalDate(item.date); // Format date to 'YYYY-MM-DD'
+                item.date = formatToLocalDate(item.date); 
             });
 
             return res.status(200).json({
@@ -50,7 +47,6 @@ const DutySwap = (req, res) => {
     });
 };
 
-// Helper function to parse swipe details
 function parseSwipeDetails(swipeDetails) {
     const parsed = {};
     const regex = /Day (\d+) - Swipe Time - (\d{2}:\d{2})/g;
@@ -66,15 +62,13 @@ function parseSwipeDetails(swipeDetails) {
         parsed[day].push({ "Swipe Time": time });
     }
 
-    // Convert the object to an array of day objects
     return Object.keys(parsed).map(day => ({ day, swipes: parsed[day] }));
 }
 
-// Helper function to format date to local date format (YYYY-MM-DD)
 function formatToLocalDate(date) {
     if (!date) return null;
     const localDate = new Date(date);
-    return localDate.toLocaleDateString('en-CA'); // Formats as YYYY-MM-DD
+    return localDate.toLocaleDateString('en-CA'); 
 }
 
 

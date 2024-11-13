@@ -1,4 +1,3 @@
-const _ = require('lodash');
 const db = require('../config'); 
 
 const approvalNotification = (req, res) => {
@@ -22,7 +21,7 @@ const approvalNotification = (req, res) => {
         LEFT JOIN 
             emp_ref e ON a.bio_id = e.bio_id 
         WHERE 
-            a.campus = ? AND a.assigned_head_id = ?
+            a.campus = ? AND a.assigned_head_id = ? and a.status ='Pending'
     `;
 
     if (!bioId || !campus) {
@@ -68,8 +67,8 @@ const approvalNotification = (req, res) => {
 }
 
 const getBaseUrl = (req) => {
-    const protocol = req.protocol;  // http or https
-    const host = req.get('host');   // hostname and port if available
+    const protocol = req.protocol;  
+    const host = req.get('host');   
     return `${protocol}://${host}`;
 };
 
