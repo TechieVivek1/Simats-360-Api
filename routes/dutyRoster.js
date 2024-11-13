@@ -4,6 +4,9 @@ const dutyRoster = async (req, res) => {
   let deptId;
   const { requestFrom, requestTo,bioId,campus } = req.body;
 
+  // console.log(req.body);
+  
+
   if (!requestFrom || !requestTo || !bioId || !campus) {
     return res.status(400).json({ status: false, message: 'Invalid or missing fields', data: [] });
   }  
@@ -47,7 +50,8 @@ const dutyRoster = async (req, res) => {
             contact:item.contact,
             designation:item.designation,
             department:item.department_name,
-            group:item.group_name
+            group:item.group_name,
+            date: item.startdate
           }
         })
 
