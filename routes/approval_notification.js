@@ -56,6 +56,7 @@ const approvalNotification = (req, res) => {
                 message: "Notification Fetched Successfully",
                 notificationData
             });
+            
         } else {
             return res.status(200).json({
                 status: false,
