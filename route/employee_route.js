@@ -46,7 +46,7 @@ const getLeaveRecords = require('../routes/get_leave_records')
 router.post('/getLeaveRecords', getLeaveRecords)
 
 //apply leave
-const applyLeave = require('../routes/apply_leave')
+const applyLeave = require('../routes/applyLeaveModified')
 router.post('/applyLeave', applyLeave)
 
 // MonthlyBufferDetails
