@@ -6,23 +6,22 @@ const DutySwap = (req, res) => {
         return res.status(422).json({
             status: false,
             message: "Parameter is missing",
-            swapDutyNotificationData: []
+            swapDutyData: []
         });
     }
 
     const swapQuery = `
-        SELECT id AS swapId, employee_name AS empName, shift, swipe_details AS swipesData, 
-               contact, duty_status AS dutyStatus, updated_at AS date 
-        FROM duty_details 
-        WHERE duty_exchanged = "YES" AND request_from = ?
-    `;
+        SELECT d.id AS swapId,e.employee_name as empName, d.shift, d.swipe_details AS swipesData, 
+       	e.phone as contact, d.duty_status AS dutyStatus, d.startdate AS date , d.exchange_status as exchangeStatus
+        FROM duty_details d JOIN emp_ref e on e.bio_id = d.request_to
+        WHERE d.duty_exchanged = "YES" AND d.request_from = ?`;
 
     db.query(swapQuery, [bioId], (err, result) => {
         if (err) {
             return res.status(500).json({
                 status: false,
                 message: `Internal Server Error ${err.message}`,
-                swapDutyNotificationData: []
+                swapDutyData: []
             });
         }
 
@@ -35,13 +34,13 @@ const DutySwap = (req, res) => {
             return res.status(200).json({
                 status: true,
                 message: "Data Fetched Successfully",
-                swapDutyNotificationData: result
+                swapDutyData: result
             });
         } else {
             return res.status(200).json({
                 status: true,
                 message: "No data found",
-                swapDutyNotificationData: []
+                swapDutyData: []
             });
         }
     });
@@ -59,7 +58,7 @@ function parseSwipeDetails(swipeDetails) {
         if (!parsed[day]) {
             parsed[day] = [];
         }
-        parsed[day].push({ "Swipe Time": time });
+        parsed[day].push({ "SwipeTime": time });
     }
 
     return Object.keys(parsed).map(day => ({ day, swipes: parsed[day] }));

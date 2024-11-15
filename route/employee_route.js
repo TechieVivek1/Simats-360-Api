@@ -46,7 +46,7 @@ const getLeaveRecords = require('../routes/get_leave_records')
 router.post('/getLeaveRecords', getLeaveRecords)
 
 //apply leave
-const applyLeave = require('../routes/applyLeaveModified')
+const applyLeave = require('../routes/apply_leave')
 router.post('/applyLeave', applyLeave)
 
 // MonthlyBufferDetails
@@ -104,5 +104,9 @@ router.post('/swapApproval',swapApproval)
 // apply leave modified
 const applyLeaveModified = require('../routes/applyLeaveModified')
 router.post('/applyLeaveModified',applyLeaveModified)
+
+// swap status
+const swapStatus = require('../routes/swapStatus')
+router.post('/swapStatus',swapStatus)
 
 module.exports = router
