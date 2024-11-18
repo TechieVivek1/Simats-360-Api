@@ -46,7 +46,7 @@ const getLeaveRecords = require('../routes/get_leave_records')
 router.post('/getLeaveRecords', getLeaveRecords)
 
 //apply leave
-const applyLeave = require('../routes/apply_leave')
+const applyLeave = require('../routes/applyLeaveModified')
 router.post('/applyLeave', applyLeave)
 
 // MonthlyBufferDetails
@@ -58,7 +58,7 @@ const homeInfo = require('../routes/Homeinfo')
 router.post('/homeInfo', homeInfo)
 
 const generalNotification = require('../routes/announcement_notifications')
-router.get('/generalNotification',generalNotification)
+router.post('/generalNotification',generalNotification)
 
 
 const approvalNotification = require('../routes/approval_notification')

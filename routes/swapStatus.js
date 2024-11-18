@@ -58,7 +58,7 @@ function parseSwipeDetails(swipeDetails) {
         if (!parsed[day]) {
             parsed[day] = [];
         }
-        parsed[day].push({ "SwipeTime": time });
+        parsed[day].push({ "swipeTime": time });
     }
 
     return Object.keys(parsed).map(day => ({ day, swipes: parsed[day] }));

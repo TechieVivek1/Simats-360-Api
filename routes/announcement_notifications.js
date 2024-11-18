@@ -2,9 +2,16 @@ const { result } = require('lodash')
 const db = require('../config')
 
 const notification = (req,res) => {
-    const query = 'select * from notifications where notification_category = "general"'
 
-    db.query(query, (err,result) => {
+    const {campus} = req.body
+
+    if(!campus){
+        return res.status(400).json({message: "Campus is required"})
+    }
+
+    const query = 'select * from notifications where campus = ?'
+
+    db.query(query,[campus], (err,result) => {
         if (err) {
             return res.status(500).json({
                 status: false,

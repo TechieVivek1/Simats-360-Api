@@ -61,7 +61,7 @@ function parseSwipeDetails(swipeDetails) {
         if (!parsed[day]) {
             parsed[day] = [];
         }
-        parsed[day].push({ "Swipe Time": time });
+        parsed[day].push({ "swipeTime": time });
     }
 
     // Convert the object to an array of day objects
