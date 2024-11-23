@@ -109,4 +109,21 @@ router.post('/applyLeaveModified',applyLeaveModified)
 const swapStatus = require('../routes/swapStatus')
 router.post('/swapStatus',swapStatus)
 
+//General duties
+const generalDuties = require('../routes/GeneralDuty')
+router.post('/generalDuty',generalDuties)
+
+// claimHolidayCredits 
+const claimHolidayCredits = require('../routes/claimHolidayCredits')
+router.post('/claimHolidayCredits',claimHolidayCredits)
+
+// requestClaimHolidays
+const requestClaimHolidays = require('../routes/requestClaimHoliday')
+router.post('/requestClaimHoliday',requestClaimHolidays)
+
+//generalDutySwapStatus
+const generalDutySwapStatus = require('../routes/generalDutySwapStatus')
+router.post('/generalDutySwapStatus',generalDutySwapStatus)
+
+
 module.exports = router
