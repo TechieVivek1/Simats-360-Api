@@ -13,7 +13,7 @@ const updateDutyExchange = (req, res) => {
   con.query(query, params, (err, result) => {
     if (err) {
       console.error("Database query error:", err);
-      return res.status(500).json({ status: false, message: 'Error updating duty details', error: err });
+      return res.status(500).json({ status: false, message: 'Error updating duty details', data: {} });
     }
 
     if (result.affectedRows === 0) {

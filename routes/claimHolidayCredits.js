@@ -48,7 +48,7 @@ const claimHolidayCredits = (req, res) => {
                             isClaimed: false, 
                         });
                     }
-ஃ
+
 
                         return res.status(201).json({
                             status: true,

@@ -78,6 +78,7 @@ router.post('/swapDutyNotification',swapDutyNotification)
 const pendingDutyCount = require('../routes/pendingDutyCounts')
 router.post('/pendingDutyCount',pendingDutyCount)
 
+// duty claims
 const dutyClaims = require('../routes/dutyClaims')
 router.post('/dutyClaims',dutyClaims)
 
@@ -124,6 +125,11 @@ router.post('/requestClaimHoliday',requestClaimHolidays)
 //generalDutySwapStatus
 const generalDutySwapStatus = require('../routes/generalDutySwapStatus')
 router.post('/generalDutySwapStatus',generalDutySwapStatus)
+
+// generalDutySwap
+const generalDutySwap = require('../routes/swapGeneralDuty')
+router.post('/generalDutySwap',generalDutySwap)
+
 
 
 module.exports = router
