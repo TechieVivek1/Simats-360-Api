@@ -286,7 +286,7 @@ const applyLeaveModified = async (req, res) => {
         .json({ status: false, message: "Missing required fields" });
     }
 
-    if (leaveCategory.toLowerCase() === "od") {
+    if (leaveCategory.toLowerCase() === "c.off") {
       try {
         await query("START TRANSACTION");
 
@@ -295,6 +295,19 @@ const applyLeaveModified = async (req, res) => {
           totalDays = 0.5; 
         } else {
           totalDays = 1; 
+        }
+
+        const overlapResult = await query(
+          `SELECT COUNT(*) as count 
+           FROM apply_leave 
+           WHERE bio_id = ? AND campus = ? AND status != 'Rejected' AND start_date = ?`,
+          [bioId, campus, startDate]
+        );
+        if (overlapResult[0].count > 0) {
+          return res.status(409).json({
+            status: false,
+            message: "Leave application already exist for this date.",
+          });
         }
 
         const insertQuery = `
@@ -319,7 +332,64 @@ const applyLeaveModified = async (req, res) => {
         await query("COMMIT");
         res.status(200).json({
           status: true,
-          message: "OD Leave Applied Successfully",
+          message: "comboff Applied Successfully",
+        });
+      } catch (error) {
+
+        await query("ROLLBACK");
+        res.status(500).json({
+          status: false,
+          message: "Error applying leave for comboff",
+          error: error.message,
+        });
+      }
+    } else if (leaveCategory.toLowerCase() === "od") {
+      try {
+        await query("START TRANSACTION");
+
+        let totalDays = 0;
+        if (leaveType.toLowerCase() === "half_day") {
+          totalDays = 0.5; 
+        } else {
+          totalDays = 1; 
+        }
+
+        const overlapResult = await query(
+          `SELECT COUNT(*) as count 
+           FROM apply_leave 
+           WHERE bio_id = ? AND campus = ? AND status != 'Rejected' AND start_date = ?`,
+          [bioId, campus, startDate]
+        );
+        if (overlapResult[0].count > 0) {
+          return res.status(409).json({
+            status: false,
+            message: "Leave application already exist for this date.",
+          });
+        }
+
+        const insertQuery = `
+          INSERT INTO apply_leave 
+          (bio_id, category, leave_type, half_day_session, start_date, end_date, total_days, reason, file, campus, assigned_head_id, status) 
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Pending')
+        `;
+        await query(insertQuery, [
+          bioId,
+          leaveCategory,
+          leaveType,
+          daySession,
+          startDate,
+          endDate,
+          totalDays,
+          reason,
+          file ? `uploads/${file}` : null,
+          campus,
+          headId,
+        ]);
+
+        await query("COMMIT");
+        res.status(200).json({
+          status: true,
+          message: "OD Applied Successfully",
         });
       } catch (error) {
 
@@ -451,7 +521,6 @@ const applyLeaveModified = async (req, res) => {
           // For half-day leave, endDate can still be the same day.
           endDate = startDate;
         } else {
-          // Default handling for full-day leaves
           endDate = startDate;
         }
 
