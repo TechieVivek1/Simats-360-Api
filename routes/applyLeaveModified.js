@@ -286,7 +286,7 @@ const applyLeaveModified = async (req, res) => {
         .json({ status: false, message: "Missing required fields" });
     }
 
-    if (leaveCategory.toLowerCase() === "c.off") {
+    if (leaveCategory.toLowerCase() === "off") {
       try {
         await query("START TRANSACTION");
 
