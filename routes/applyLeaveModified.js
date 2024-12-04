@@ -2,7 +2,7 @@ const express = require("express");
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
-const pool = require("../config"); // Importing pool from your config.
+const pool = require("../config"); 
 
 const demoFileDir = path.join(__dirname, "uploads");
 
@@ -339,8 +339,7 @@ const applyLeaveModified = async (req, res) => {
         await query("ROLLBACK");
         res.status(500).json({
           status: false,
-          message: "Error applying leave for comboff",
-          error: error.message,
+          message: "Error applying leave for comboff"
         });
       }
     } else if (leaveCategory.toLowerCase() === "od") {
@@ -396,8 +395,7 @@ const applyLeaveModified = async (req, res) => {
         await query("ROLLBACK");
         res.status(500).json({
           status: false,
-          message: "Error applying leave for OD",
-          error: error.message,
+          message: "Error applying leave for OD"
         });
       }
     } else {
@@ -460,8 +458,7 @@ const applyLeaveModified = async (req, res) => {
 
         if (leaveCategory.toLowerCase() === "earned leave" || leaveCategory.toLowerCase() === "vacation leave" || leaveCategory.toLowerCase() === "academic leave") {
           if (categoryLimits.minimalpreleavebuffer > 0) {
-            // Check minimal pre-buffer time
-            const minPreLeaveTime = new Date(
+             const minPreLeaveTime = new Date(
               startDateOnly.getTime() - categoryLimits.minimalpreleavebuffer * 60 * 60 * 1000
             );
             if (currentDateTime > minPreLeaveTime) {
@@ -472,7 +469,6 @@ const applyLeaveModified = async (req, res) => {
             }
           }
         } else if (startDateOnly < currentDate) {
-          // General Leave: Check post-buffer time
           const bufferHours = Number(categoryLimits.maximalpostprocessbuffer);
           const maxPostTime = new Date(
             endOfStartDate.getTime() + bufferHours * 60 * 60 * 1000
@@ -516,9 +512,7 @@ const applyLeaveModified = async (req, res) => {
           });
         }
 
-        // For leave categories with multiple days, we can set endDate as the actual end date (if provided)
         if (leaveType === "half_day") {
-          // For half-day leave, endDate can still be the same day.
           endDate = startDate;
         } else {
           endDate = startDate;
@@ -549,12 +543,10 @@ const applyLeaveModified = async (req, res) => {
           message: "Leave Applied Successfully",
         });
       } catch (error) {
-        // Rollback on error
         await query("ROLLBACK");
         res.status(500).json({
           status: false,
-          message: "Error inserting data into `apply_leave`",
-          error: error.message,
+          message: "Error inserting data into `apply_leave`"
         });
       }
     }

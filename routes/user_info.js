@@ -1,14 +1,13 @@
 const con = require('../config');
 const empDetails = require('../routes/empDetails');
 
-// Utility function to format months as "X.Y yr/yrs"
 const formatExperience = (months) => {
     if (months === 0) {
-        return "0 yr"; // Handle zero months explicitly
+        return "0 yr"; 
     }
-    const years = months / 12; // Convert months to years
-    const formattedYears = years.toFixed(1); // Keep one decimal place
-    const wholeYears = Math.floor(years); // Get the integer part of the years
+    const years = months / 12; 
+    const formattedYears = years.toFixed(1); 
+    const wholeYears = Math.floor(years); 
     const suffix = (wholeYears === 0 || wholeYears === 1 || wholeYears === 2) ? "yr" : "yrs"; // Singular for 0 and 1
     return `${formattedYears} ${suffix}`;
 };
@@ -57,16 +56,13 @@ const userInfo = async (req, res) => {
             return res.status(404).json({ message: 'User not found' });
         }
 
-        // Extract internal and external experience from results
-        const result = results[0]; // Assuming only one record per bio_id
+        const result = results[0]; 
         const internalExperienceFormatted = formatExperience(result.internal_experience || 0);
         const externalExperienceFormatted = formatExperience(result.external_experience || 0);
 
-        // Append formatted experience to the result
         result.internal_experience = internalExperienceFormatted;
         result.external_experience = externalExperienceFormatted;
 
-        // Fetch additional details
         let empDetailsResultData = {};
         let empDetailsResult = await empDetails(campus, bio_id);
 
