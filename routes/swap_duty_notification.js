@@ -29,7 +29,7 @@ const DutySwap = (req, res) => {
         if (result.length > 0) {
             // Process swipe details and format date for each result item
             result.forEach(item => {
-                item.swipesData = parseSwipeDetails(item.swipesData);
+                item.swipesData = parseSwipeDetails(item.swipesData); // Parse and structure swipe details
                 item.date = formatToLocalDate(item.date); // Format date to 'YYYY-MM-DD'
             });
 
@@ -51,12 +51,12 @@ const DutySwap = (req, res) => {
 // Helper function to parse swipe details
 function parseSwipeDetails(swipeDetails) {
     const parsed = {};
-    const regex = /Day (\d+) - Swipe Time - (\d{2}:\d{2})/g;
+    const regex = /Day\s+(\d+)\s+-\s+Swipe Time\s+-\s+(\d{2}:\d{2})/g; // Improved regex with flexible spacing
     let match;
 
     while ((match = regex.exec(swipeDetails)) !== null) {
         const day = `Day ${match[1]}`;
-        const time = match[2];
+        const time = match[2].trim(); // Remove extra spaces if any
         
         if (!parsed[day]) {
             parsed[day] = [];
@@ -74,6 +74,5 @@ function formatToLocalDate(date) {
     const localDate = new Date(date);
     return localDate.toLocaleDateString('en-CA'); // Formats as YYYY-MM-DD
 }
-
 
 module.exports = DutySwap;
