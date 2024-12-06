@@ -12,24 +12,22 @@ const homeInfo = async (req, res) => {
     }
 
     const form = new FormData();
-    form.append('bio_id', bioId);  
-    form.append('campus', campus);  
-    form.append('category', category);  
+    form.append('bio_id', bioId);
+    form.append('campus', campus);
+    form.append('category', category);
 
     try {
-        // Make the request using axios
         const response = await axios.post('http://localhost/hr/api/emp_attendance_new.php', form, {
             headers: {
                 'Cookie': 'PHPSESSID=2i04rf2t7vr73r2cdp0upd16iq',
-                ...form.getHeaders()  // Ensure form-data headers are included
+                ...form.getHeaders()
             }
         });
 
-        // Send success response with data from the API
         return res.status(200).json({
             status: true,
             message: 'Attendance data retrieved successfully.',
-            data: response.data  
+            data: response.data
         });
 
     } catch (error) {

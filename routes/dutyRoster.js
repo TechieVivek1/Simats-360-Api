@@ -40,6 +40,9 @@ const dutyRoster = async (req, res) => {
         }
 
         var resultData = result.map(item => {
+
+          const startDate = new Date(item.startdate).toLocaleDateString('en-CA');
+
           return {
             dutyId:item.id,
             empId:item.bio_id,
@@ -51,7 +54,7 @@ const dutyRoster = async (req, res) => {
             designation:item.designation,
             department:item.department_name,
             group:item.group_name,
-            date: item.startdate
+            date: startDate
           }
         })
 
@@ -74,20 +77,28 @@ const dutyRoster = async (req, res) => {
 
 function parseSwipeDetails(swipeDetails) {
   const parsed = {};
-  const regex = /Day (\d+) - Swipe Time - (\d{2}:\d{2})/g;
+  const regex = /Day\s+(\d+)\s+-\s+Swipe Time\s+-\s+(\d{2}:\d{2})/g; // Improved regex with flexible spacing
   let match;
 
   while ((match = regex.exec(swipeDetails)) !== null) {
       const day = `Day ${match[1]}`;
-      const time = match[2];
+      const time = match[2].trim(); // Remove extra spaces if any
       
       if (!parsed[day]) {
           parsed[day] = [];
       }
-      parsed[day].push({ "Swipe Time": time });
+      parsed[day].push({ "swipeTime": time });
   }
 
+  // Convert the object to an array of day objects
   return Object.keys(parsed).map(day => ({ day, swipes: parsed[day] }));
+}
+
+// Helper function to format date to local date format (YYYY-MM-DD)
+function formatToLocalDate(date) {
+  if (!date) return null;
+  const localDate = new Date(date);
+  return localDate.toLocaleDateString('en-CA'); // Formats as YYYY-MM-DD
 }
 
 module.exports = dutyRoster;

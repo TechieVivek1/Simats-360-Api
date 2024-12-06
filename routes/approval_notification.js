@@ -46,7 +46,8 @@ const approvalNotification = (req, res) => {
                 return {
                     ...item,
                     start_date: new Date(item.start_date).toLocaleDateString('en-CA'),
-                    profileImg:`${getBaseUrl(req)}`+`/${item.profileImg}`
+                    profileImg:`${getBaseUrl(req)}`+`/${item.profileImg}`,
+                    
                 };
             });
 
