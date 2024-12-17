@@ -130,6 +130,10 @@ router.post('/generalDutySwapStatus',generalDutySwapStatus)
 const generalDutySwap = require('../routes/swapGeneralDuty')
 router.post('/generalDutySwap',generalDutySwap)
 
+// Mid Duty 
+const midDuty = require('../routes/MidDuty')
+router.post('/midDuty',midDuty)
+
 
 
 module.exports = router
