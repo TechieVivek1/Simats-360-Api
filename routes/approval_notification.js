@@ -22,7 +22,8 @@ const approvalNotification = (req, res) => {
             emp_ref e ON a.bio_id = e.bio_id 
         WHERE 
             a.campus = ? AND a.assigned_head_id = ? and a.status ='Pending'
-    `;
+        AND startdate >= DATE_FORMAT(CURDATE() - INTERVAL 1 MONTH, '%Y-%m-21') 
+        AND startdate < DATE_FORMAT(CURDATE(), '%Y-%m-21') `;
 
     if (!bioId || !campus) {
         return res.status(422).json({
