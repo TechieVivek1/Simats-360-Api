@@ -546,7 +546,7 @@ const applyLeaveModified = async (req, res) => {
         await query("ROLLBACK");
         res.status(500).json({
           status: false,
-          message: "Error inserting data into `apply_leave`"
+          message: "Error while applying leave"
         });
       }
     }
