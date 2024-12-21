@@ -1,4 +1,4 @@
-const db = require('../config'); 
+const db = require('../config');
 
 const approvalNotification = (req, res) => {
     const { bioId, campus } = req.body;
@@ -15,15 +15,16 @@ const approvalNotification = (req, res) => {
             a.start_date,
             a.reason,
             e.profileImg,
-            a.leave_type as leaveType
+            a.leave_type as leaveType,
+            a.file
         FROM 
             apply_leave a 
         LEFT JOIN 
             emp_ref e ON a.bio_id = e.bio_id 
         WHERE 
             a.campus = ? AND a.assigned_head_id = ? and a.status ='Pending'
-        AND startdate >= DATE_FORMAT(CURDATE() - INTERVAL 1 MONTH, '%Y-%m-21') 
-        AND startdate < DATE_FORMAT(CURDATE(), '%Y-%m-21') `;
+        AND a.start_date >= DATE_SUB(CURDATE(), INTERVAL 1 MONTH) + INTERVAL (21 - DAY(CURDATE())) DAY `;
+
 
     if (!bioId || !campus) {
         return res.status(422).json({
@@ -37,7 +38,7 @@ const approvalNotification = (req, res) => {
         if (err) {
             return res.status(500).json({
                 status: false,
-                message: `Internal Server Issue: ${err.message}`,
+                message: `Internal Server Issue: ${ err.message }`,
                 notificationData: []
             });
         }
@@ -47,8 +48,9 @@ const approvalNotification = (req, res) => {
                 return {
                     ...item,
                     start_date: new Date(item.start_date).toLocaleDateString('en-CA'),
-                    profileImg:`${getBaseUrl(req)}`+`/${item.profileImg}`,
-                    
+                    profileImg: `${ getBaseUrl(req) }` + `/${ item.profileImg }`,
+                    file:`${ getBaseUrl(req) }` +`/${ item.file }`
+
                 };
             });
 
@@ -57,7 +59,7 @@ const approvalNotification = (req, res) => {
                 message: "Notification Fetched Successfully",
                 notificationData
             });
-            
+
         } else {
             return res.status(200).json({
                 status: false,
@@ -69,9 +71,9 @@ const approvalNotification = (req, res) => {
 }
 
 const getBaseUrl = (req) => {
-    const protocol = req.protocol;  
-    const host = req.get('host');   
-    return `${protocol}://${host}`;
+    const protocol = req.protocol;
+    const host = req.get('host');
+    return `${ protocol }://${host}`;
 };
 
 module.exports = approvalNotification;

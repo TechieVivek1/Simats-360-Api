@@ -15,6 +15,7 @@ const DutySwap = (req, res) => {
                contact, duty_status AS dutyStatus, updated_at AS date 
         FROM duty_details 
         WHERE duty_exchanged = "YES" AND request_to = ? and exchange_status = 'Pending'
+        AND startdate > curdate()
     `;
 
     db.query(swapQuery, [bioId], (err, result) => {
@@ -27,10 +28,9 @@ const DutySwap = (req, res) => {
         }
 
         if (result.length > 0) {
-            // Process swipe details and format date for each result item
             result.forEach(item => {
-                item.swipesData = parseSwipeDetails(item.swipesData); // Parse and structure swipe details
-                item.date = formatToLocalDate(item.date); // Format date to 'YYYY-MM-DD'
+                item.swipesData = parseSwipeDetails(item.swipesData); 
+                item.date = formatToLocalDate(item.date); 
             });
 
             return res.status(200).json({
@@ -48,15 +48,14 @@ const DutySwap = (req, res) => {
     });
 };
 
-// Helper function to parse swipe details
 function parseSwipeDetails(swipeDetails) {
     const parsed = {};
-    const regex = /Day\s+(\d+)\s+-\s+Swipe Time\s+-\s+(\d{2}:\d{2})/g; // Improved regex with flexible spacing
+    const regex = /Day\s+(\d+)\s+-\s+Swipe Time\s+-\s+(\d{2}:\d{2})/g; 
     let match;
 
     while ((match = regex.exec(swipeDetails)) !== null) {
         const day = `Day ${match[1]}`;
-        const time = match[2].trim(); // Remove extra spaces if any
+        const time = match[2].trim(); 
         
         if (!parsed[day]) {
             parsed[day] = [];
@@ -64,15 +63,13 @@ function parseSwipeDetails(swipeDetails) {
         parsed[day].push({ "swipeTime": time });
     }
 
-    // Convert the object to an array of day objects
     return Object.keys(parsed).map(day => ({ day, swipes: parsed[day] }));
 }
 
-// Helper function to format date to local date format (YYYY-MM-DD)
 function formatToLocalDate(date) {
     if (!date) return null;
     const localDate = new Date(date);
-    return localDate.toLocaleDateString('en-CA'); // Formats as YYYY-MM-DD
+    return localDate.toLocaleDateString('en-CA'); 
 }
 
 module.exports = DutySwap;
