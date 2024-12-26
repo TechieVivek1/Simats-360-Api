@@ -15,8 +15,8 @@ const getGeneralDuty = (req, res) => {
         WHERE a.bio_id = ? 
         AND a.campus = ? 
         AND (a.status = 'pending' or a.status = 'rejected') 
-        AND startdate >= DATE_FORMAT(CURDATE() - INTERVAL 1 MONTH, '%Y-%m-21') 
-        AND startdate < DATE_FORMAT(CURDATE(), '%Y-%m-21')`;
+        AND a.startdate >= DATE_FORMAT(CURDATE() - INTERVAL 1 MONTH, '%Y-%m-21') 
+        AND a.startdate < DATE_FORMAT(CURDATE(), '%Y-%m-21')`;
 
     con.query(pendingDuty, [bioId, campus], (err, result) => {
         if (err) {

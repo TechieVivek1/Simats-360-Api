@@ -134,6 +134,11 @@ router.post('/generalDutySwap',generalDutySwap)
 const midDuty = require('../routes/MidDuty')
 router.post('/midDuty',midDuty)
 
+// general pending duty count
+const generalPendingDutyCount = require('../routes/GeneralDutyCount')
+router.post('/generalPendingDutyCount',generalPendingDutyCount)
+
+// 
 
 
 module.exports = router

@@ -19,7 +19,7 @@ const updateDutyExchange = (req, res) => {
     }
     
     if (result.affectedRows === 0) {
-      return res.status(404).json({ status: false, message: 'No record found with the provided id', data: {} });
+      return res.status(404).json({ status: false, message: 'No record found for the provided info', data: {} });
     }
 
     return res.status(200).json({ status: true, message: 'Duty exchange updated successfully', data: { id } });
