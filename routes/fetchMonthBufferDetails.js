@@ -1,0 +1,348 @@
+const con = require("../config");
+const punchData = require('./updated_punch');
+const empDetailsData = require('./empDetails');
+const shiftData = require('./shift');
+const buffData = require('./bufferTime');
+const holiday = require('./holidays');
+
+
+const isHolidayOrSundayC = (date, holidays) => {
+    const reversedDate = date.split('-').reverse().join('-').trim();
+
+    const day = new Date(reversedDate).getDay(); // Sunday is 0
+
+    const isHoliday = holidays.map(h => h.trim()).includes(reversedDate);
+
+    const isSunday = day === 0;
+    
+    return isHoliday || isSunday;
+};
+
+
+async function calculateAttendanceC(punchResultData, holidayResultdata, shiftTotalHours, shiftStartTime,shiftEndtime, buffResultsData){
+
+    let presentDays = 0;
+    let absentDays = 0;
+    let weekoffDays = 0;
+    let totalHalfWorkingDays = 0
+    let totalWorkingHours = 0;
+    let adjustedBuffTime = buffResultsData;
+    let gsonData = []
+    let attendancePercentage = 0;
+    let inTime  = 0;
+    let outTime = 0;
+    let totalWorkingDays = 0;
+
+    const punch = punchResultData
+    const holidays = holidayResultdata
+
+    // console.log(punchResultData, holidayResultdata, shiftTotalHours, shiftStartTime,shiftEndtime, buffResultsData);
+    
+    // holidayResultdata
+
+    
+    
+    punch.forEach(punch=>{
+        const punchDate = punch.date;
+
+
+        // console.log(punchDate);
+        
+
+        if (!isHolidayOrSundayC(punchDate,holidays)) {
+
+            // console.log("Working day")
+            totalWorkingDays++
+            const hasPunchIn = Object.keys(punch.time).length > 0;
+            // console.log(hasPunchIn);
+            
+            if (hasPunchIn) {
+                if(Object.keys(punch.time).length > 2){
+                    let times = Object.keys(punch.time);
+
+
+                    // New condition 
+                    // if (!isset($dailyAttendance[$date])) {
+                    //     $dailyAttendance[$date] = [];
+                    // }
+                    // if (!isset($dailyAttendance[$date]['in_time'])) {
+                    //     $dailyAttendance[$date]['in_time'] = $time;
+                    // } elseif (isset($dailyAttendance[$date]['in_time']) && !isset($dailyAttendance[$date]['out_time'])) {
+                    //     $inTime = strtotime($dailyAttendance[$date]['in_time']);
+                    //     $currentTime = strtotime($time);
+                    //     $timeDifference = ($currentTime - $inTime) / 60;
+                    //     if ($timeDifference > 120) {
+                    //         $dailyAttendance[$date]['out_time'] = $time;
+                    //     }
+                    // }
+                    
+
+                    let firstTime = times[0]; 
+                    let lastTime = times[times.length - 1];
+
+                    //  console.log(firstTime,lastTime);
+
+
+                    // console.log(firstTime,lastTime);
+                    
+                     
+                    let firstTimeDate = new Date(`1970-01-01T${firstTime}Z`);
+                    let lastTimeDate = new Date(`1970-01-01T${lastTime}Z`);
+
+                    
+
+                    let shiftStartDate = new Date(`1970-01-01T${shiftStartTime}Z`);
+                    let shiftEndDate = new Date(`1970-01-01T${shiftEndtime}Z`);
+                    let durationMs = lastTimeDate - firstTimeDate; 
+
+                    // console.log(shiftStartDate,shiftEndDate,durationMs);
+                    
+
+                    let hours = Math.floor(durationMs / (1000 * 60 * 60)); // Convert ms to hours
+                    let minutes = Math.floor((durationMs % (1000 * 60 * 60)) / (1000 * 60));
+                    
+                    let totalWorkingHoursDuration =  hours + (minutes / 60);
+
+                    // console.log("totalworkinghours"+ totalWorkingHoursDuration);
+                    
+
+                    if(firstTimeDate  > shiftStartDate){
+                        console.log("firstTimeDate > shiftStartDate" +"late");
+                        let  late = firstTimeDate - shiftStartDate;
+                        let lateHours = Math.floor(late / (1000 * 60 * 60));
+                        let lateMinutes = Math.floor((late % (1000 * 60 * 60))/ (1000 * 60));
+
+                        inTime = lateHours +  (lateMinutes / 60);
+
+
+                        // console.log("late minutes"+inTime);
+                        if(inTime>0){
+                            adjustedBuffTime = adjustedBuffTime - inTime
+                        }  
+                        
+                    }
+                    if(lastTimeDate < shiftEndDate){
+                        let  late = shiftEndDate - lastTimeDate;
+                        let lateHours = Math.floor(late / (1000 * 60 * 60));
+                        let lateMinutes = Math.floor((late % (1000 * 60 * 60))/ (1000 * 60));
+                        outTime = lateHours +  (lateMinutes / 60);
+
+                        if(outTime>0){
+                            adjustedBuffTime = adjustedBuffTime - outTime
+                        }
+                        
+                    }
+
+
+                    if(adjustedBuffTime  < 0){
+                        let  exceededMinutes = Math.abs(adjustedBuffTime);
+                        if(exceededMinutes < 30){
+                            absentDays = 0;
+                        } else if(exceededMinutes < 60){
+                            absentDays = 0.5;
+                        } else {
+                            absentDays = 0.5 + Math.floor((exceededMinutes - 30) /  30) * 0.5;
+                        }
+                    }
+
+                    if(totalWorkingHoursDuration  >= 4.00) {
+                        presentDays ++;
+                        totalWorkingHours += totalWorkingHoursDuration;
+                    } else if( totalWorkingHoursDuration > 0) {
+                        totalHalfWorkingDays ++;
+                        totalWorkingHours += totalWorkingHoursDuration;
+                    } 
+
+                    gsonData.push({date :punchDate,remainingBuff:adjustedBuffTime,exceed:inTime,early:outTime,status:"present"})
+                    inTime = 0
+                    outTime = 0
+
+                    
+
+                } else {
+                    totalWorkingDays ++
+                    totalHalfWorkingDays++
+
+                    if(Object.keys(punch.time).length > 1){
+                        let times =  Object.keys(punch.time)
+                        let singlePunch = times[0];
+                    }
+                    gsonData.push({date :punchDate,remainingBuff:adjustedBuffTime,exceed:inTime,early:outTime,status:"halfday present"})
+                }
+            } else{
+                absentDays++
+                gsonData.push({date :punchDate,remainingBuff:adjustedBuffTime,exceed:inTime,early:outTime,status:"absent"})
+            } 
+        } else {
+            // console.log("holiday")
+            const hasPunchIn = Object.keys(punch.time).length > 0;
+            if (hasPunchIn) {
+                totalHalfWorkingDays++
+
+                if(Object.keys(punch.time).length > 2){
+                    let times = Object.keys(punch.time);
+
+                    let firstTime = times[0]; 
+                    let lastTime = times[times.length - 1];
+
+                     
+                    let firstTimeDate = new Date(`1970-01-01T${firstTime}Z`);
+                    let lastTimeDate = new Date(`1970-01-01T${lastTime}Z`);
+
+                    let shiftStartDate = new Date(`1970-01-01T${shiftStartTime}Z`);
+                    let shiftEndDate = new Date(`1970-01-01T${shiftEndtime}Z`);
+                    let durationMs = lastTimeDate - firstTimeDate; 
+
+                    let hours = Math.floor(durationMs / (1000 * 60 * 60)); // Convert ms to hours
+                    let minutes = Math.floor((durationMs % (1000 * 60 * 60)) / (1000 * 60));
+                    
+                    let totalWorkingHoursDuration =  hours + (minutes / 60);
+
+
+                    if(firstTimeDate  > shiftStartDate){
+                        let  late = firstTimeDate - shiftStartDate;
+                        let lateHours = Math.floor(late / (1000 * 60 * 60));
+                        let lateMinutes = Math.floor((late % (1000 * 60 * 60))/ (1000 * 60));
+                        inTime = lateHours +  (lateMinutes / 60);
+
+                        if(inTime>0){
+                            adjustedBuffTime = adjustedBuffTime - inTime
+                        }
+                        
+                    }
+                    if(lastTimeDate< shiftEndDate){
+                         let  late = shiftEndDate - lastTimeDate;
+                        let lateHours = Math.floor(late / (1000 * 60 * 60));
+                        let lateMinutes = Math.floor((late % (1000 * 60 * 60))/ (1000 * 60));
+                        outTime = lateHours +  (lateMinutes / 60);
+                        if(outTime>0){
+                            adjustedBuffTime = adjustedBuffTime - outTime
+                        }
+                    }
+
+
+                    if(adjustedBuffTime  < 0){
+                        let  exceededMinutes = Math.abs(adjustedBuffTime);
+                        if(exceededMinutes < 30){
+                            absentDays = 0;
+                        } else if(exceededMinutes < 60){
+                            absentDays = 0.5;
+                        } else {
+                            absentDays = 0.5 + Math.floor((exceededMinutes - 30) /  30) * 0.5;
+                        }
+                    }
+
+                    if(totalWorkingHoursDuration  >= 4.00) {
+                        presentDays ++;
+                        totalWorkingHours += totalWorkingHoursDuration;
+                    } else if( totalWorkingHoursDuration > 0) {
+                        totalHalfWorkingDays ++;
+                        totalWorkingHours += totalWorkingHoursDuration;
+                    } 
+                    gsonData.push({date :punchDate,remainingBuff:adjustedBuffTime,exceed:inTime,early:outTime,status:"week off && present"})
+                    inTime = 0
+                    outTime = 0
+
+                } else {
+                    gsonData.push({date :punchDate,remainingBuff:adjustedBuffTime,exceed:inTime,early:outTime,status:"pending"})
+                }
+            } else{
+                weekoffDays++
+                gsonData.push({date :punchDate,remainingBuff:adjustedBuffTime,exceed:inTime,early:outTime,status:"week off"})
+            }
+
+        }
+    })
+
+    console.log("presentDays:" + presentDays + "absentDays:" + absentDays);
+    
+
+
+    // console.log("percentage:" +attendancePercentage);
+    // console.log("totalWorkingDays:" + totalWorkingDays);
+    
+
+    // console.log("holidays" +holidays);
+
+    attendancePercentage =  (presentDays + totalHalfWorkingDays/2) / totalWorkingDays * 100
+
+    let totalPresent = presentDays  + totalHalfWorkingDays/2
+
+
+
+    return {totalPresent,presentDays,absentDays,totalHalfWorkingDays,weekoffDays,totalWorkingHours,adjustedBuffTime,gsonData,attendancePercentage}
+
+}
+
+const homeInfo = async (req, res) => {
+    const { bioId, campus, category, year, month } = req.body;
+
+    // Input validation
+    if (!bioId || !campus || !category || !year || !month) {
+        return res.status(400).json({ status: false, message: "All fields are required" , error:"All fields are required" });
+
+    }
+
+    let revisedMonth = month - 1
+
+    try {
+        // Fetch punch and employee details in parallel
+        const [punchResult, empDetailsResult] = await Promise.all([
+            punchData(bioId, year, revisedMonth),
+            empDetailsData(campus, bioId)
+        ]);
+
+        let punchResultData = [];
+        let empDetailsResultData = {};
+        let shiftResultsData = {};
+        let buffResultsData = 0;
+        let holidayResultdata = [];
+
+        if (punchResult && punchResult.status) {
+            punchResultData = punchResult.data;
+        }
+
+        if (empDetailsResult && empDetailsResult.status) {
+            empDetailsResultData = empDetailsResult.empDetails;
+        }
+
+        const [buffResult, holidayResult] = await Promise.all([
+            buffData(campus, category),
+            holiday(campus)
+        ]);
+
+        if (holidayResult && holidayResult.status) {
+            holidayResultdata = holidayResult.data.map(h => new Date(h).toISOString().split('T')[0]);
+        }
+
+        if (buffResult && buffResult.status) {
+            buffResultsData = buffResult.bufferTimeData || 0;
+        }
+
+        if (empDetailsResultData.shift) {
+            const shiftResult = await shiftData(empDetailsResultData.shift);
+            if (shiftResult && shiftResult.status) {
+                shiftResultsData = shiftResult.data;
+            }
+        }
+
+        const shiftTotalHours = shiftResultsData.total_hrs || 7;
+        const shiftStartTime = shiftResultsData.start_time || '08:00:00';
+        const shiftEndtime = shiftResultsData.end_time ||  '17:00:00';
+
+
+    
+        const {totalPresent,presentDays,absentDays,totalHalfWorkingDays,weekoffDays,totalWorkingHours,adjustedBuffTime,gsonData,attendancePercentage} = await calculateAttendanceC(
+            punchResultData, holidayResultdata, shiftTotalHours, shiftStartTime,shiftEndtime, buffResultsData
+        );
+
+        // const balanceBuffTime = buffResultsData - adjustedBuffTime;
+
+        res.status(200).json({status:true,message:"Buffer Details Fetched",data:[{adjustedBuffTime,gsonData}]})
+
+    } catch (error) {
+        res.status(500).json({ status: false, message: "Server error", error: error.message });
+    }
+};
+
+module.exports = homeInfo;
