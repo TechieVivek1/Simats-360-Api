@@ -4,7 +4,7 @@ const leaveInfo = async (req, res) => {
     const { category, campus, bio_id } = req.body;
 
     if (!bio_id || !category || !campus) {
-        return res.status(400).json({ status: false, message: 'Empty Fields', data: {} });
+        return res.status(400).json({ status: false, message: 'Empty Fields', data: [] });
     }
 
     const mapLeaveCheckQuery = `SELECT COUNT(*) as count FROM map_leave WHERE campus = ? AND category = ?`;
@@ -17,7 +17,7 @@ const leaveInfo = async (req, res) => {
         const mapLeaveCount = mapLeaveCheckResults[0].count;
 
         if (mapLeaveCount === 0) {
-            return res.status(404).json({ status: false, message: 'No mapped leaves found', data: {} });
+            return res.status(404).json({ status: false, message: 'No mapped leaves found', data: [] });
         }
 
         const leaveTypesQuery = `SELECT leave_name FROM leavetypes WHERE campus = ?`;
@@ -35,7 +35,7 @@ const leaveInfo = async (req, res) => {
                     const mappingCheckQuery = `SELECT time_interval FROM map_leave WHERE campus = ? AND category = ? AND leave_name = ?`;
                     con.query(mappingCheckQuery, [campus, category, leaveName], (err, mappingResults) => {
                         if (err || mappingResults.length === 0) {
-                            resolve(); 
+                            resolve();
                             return;
                         }
 
@@ -43,7 +43,7 @@ const leaveInfo = async (req, res) => {
                         const availabilityQuery = `SELECT ?? FROM available_leave WHERE campus = ? AND category = ? AND bio_id = ?`;
                         con.query(availabilityQuery, [columnName, campus, category, bio_id], (err, availabilityResults) => {
                             if (err || availabilityResults.length === 0) {
-                                resolve(); 
+                                resolve();
                                 return;
                             }
 
@@ -53,7 +53,7 @@ const leaveInfo = async (req, res) => {
                                 const camelKey = leaveName
                                     .replace(/\b\w/g, (char) => char.toUpperCase()) 
                                     .replace(/ /g, '') 
-                                    .replace(/^./, (char) => char.toLowerCase()); 
+                                    .replace(/^./, (char) => char.toLowerCase());
                                 leaveTypes[camelKey] = availability;
                             }
 
@@ -67,7 +67,7 @@ const leaveInfo = async (req, res) => {
                 return res.status(200).json({
                     status: true,
                     message: 'Success',
-                    data: leaveTypes,
+                    data: [leaveTypes], 
                 });
             });
         });
