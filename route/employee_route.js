@@ -28,8 +28,9 @@ router.post('/attendanceRevised',attendanceResvised);
 const homeDetailsInfo = require('../routes/homeDetails')
 router.post('/homeDetails',homeDetailsInfo)
 
-const homeCopy  = require('../routes/homeCopy')
-router.post('/homeCopy',homeCopy)
+const {homeInfo,updateAttendance } = require('../routes/homeCopy')
+router.post('/homeCopy',homeInfo)
+router.post('/homeCopy/updateAttendance',updateAttendance)
 
 const monthlySalary = require('../routes/monthlySalaryReport')
 router.post('/monthlySalaryReport',monthlySalary)
@@ -54,8 +55,8 @@ const monthlyBufferDetails = require('../routes/fetchMonthBufferDetails')
 router.post('/monthlyBufferDetails', monthlyBufferDetails)
 
 //HomeInfo
-const homeInfo = require('../routes/Homeinfo')
-router.post('/homeInfo', homeInfo)
+const homeAttendance = require('../routes/Homeinfo')
+router.post('/homeInfo', homeAttendance)
 
 const generalNotification = require('../routes/announcement_notifications')
 router.post('/generalNotification',generalNotification)
@@ -103,7 +104,7 @@ const swapApproval = require('../routes/swapApproval')
 router.post('/swapApproval',swapApproval)
 
 // apply leave modified
-const applyLeaveModified = require('../routes/applyLeaveModified')
+const applyLeaveModified = require('../routes/apply_leave')
 router.post('/applyLeaveModified',applyLeaveModified)
 
 // swap status

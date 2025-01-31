@@ -7,7 +7,8 @@ const getLeaves = async (req, res) => {
         return res.status(400).json({ status: false, message: 'Empty Fields' });
     }
 
-    let query = `SELECT leave_type   as leaveType, 
+    let query = `SELECT id ,
+                        leave_type   as leaveType, 
                         start_date   as startDate,
                         end_date     as endDate,
                         category,

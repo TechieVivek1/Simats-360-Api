@@ -370,6 +370,46 @@ async function calculateAttendanceC(punchResultData, holidayResultdata, shiftTot
     return {totalWorkingDays,totalPresent,presentDays,absentDays,totalHalfWorkingDays,weekoffDays,totalWorkingHours,adjustedBuffTime,gsonData,attendancePercentage}
 
 }
+const db = require('../config'); // Import database connection
+
+const updateAttendance = async (req, res) => {
+    try {
+        const { bioId, campus, cl, sl } = req.body;
+
+        if (!bioId) {
+            return res.status(400).json({ status: false, message: "bioId is required" });
+        }
+
+        if (!campus) {
+            return res.status(400).json({ status: false, message: "campus is required" });
+        }
+
+        if (cl === undefined || sl === undefined) {
+            return res.status(400).json({ status: false, message: "casualLeave and sickLeave are required" });
+        }
+
+        // Update the leave limits using SQL query
+        const query = `UPDATE available_leave SET casual_leave_limit = ?, sick_leave_limit = ?, updated_at = NOW() WHERE bio_id = ? AND campus = ?`;
+        
+        db.query(query, [cl, sl, bioId, campus], (err, result) => {
+            if (err) {
+                console.error("Error updating leave limits:", err);
+                return res.status(500).json({ status: false, message: "Internal server error" });
+            }
+            
+            if (result.affectedRows === 0) {
+                return res.status(404).json({ status: false, message: "Leave record not found" });
+            }
+
+            return res.status(200).json({ status: true, message: "Leave limits updated successfully" });
+        });
+    } catch (error) {
+        console.error("Error updating leave limits:", error);
+        return res.status(500).json({ status: false, message: "Internal server error" });
+    }
+};
+
+
 
 const homeInfo = async (req, res) => {
     const { bioId, campus, category, year, month } = req.body;
@@ -454,4 +494,4 @@ const homeInfo = async (req, res) => {
     }
 };
 
-module.exports = homeInfo;
+module.exports = {homeInfo,updateAttendance};
