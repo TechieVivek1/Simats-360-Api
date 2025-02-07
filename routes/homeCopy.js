@@ -370,6 +370,7 @@ async function calculateAttendanceC(punchResultData, holidayResultdata, shiftTot
     return {totalWorkingDays,totalPresent,presentDays,absentDays,totalHalfWorkingDays,weekoffDays,totalWorkingHours,adjustedBuffTime,gsonData,attendancePercentage}
 
 }
+<<<<<<< HEAD
 const db = require('../config'); // Import database connection
 
 const updateAttendance = async (req, res) => {
@@ -410,6 +411,8 @@ const updateAttendance = async (req, res) => {
 };
 
 
+=======
+>>>>>>> 897c188 (changes)
 
 const homeInfo = async (req, res) => {
     const { bioId, campus, category, year, month } = req.body;
@@ -494,4 +497,8 @@ const homeInfo = async (req, res) => {
     }
 };
 
+<<<<<<< HEAD
 module.exports = {homeInfo,updateAttendance};
+=======
+module.exports = homeInfo;
+>>>>>>> 897c188 (changes)

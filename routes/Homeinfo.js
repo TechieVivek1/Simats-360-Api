@@ -17,7 +17,7 @@ const homeInfo = async (req, res) => {
     form.append('category', category);
 
     try {
-        const response = await axios.post('http://localhost/hr/api/emp_attendance_new.php', form, {
+        const response = await axios.post('http://localhost/simats360/api/emp_attendance_new.php', form, {
             headers: {
                 'Cookie': 'PHPSESSID=2i04rf2t7vr73r2cdp0upd16iq',
                 ...form.getHeaders()
