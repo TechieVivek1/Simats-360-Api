@@ -25,8 +25,9 @@ router.post('/attendance',attendance);
 const attendanceResvised =  require('../routes/logicfromphpAttendance');
 router.post('/attendanceRevised',attendanceResvised);
 
-const homeDetailsInfo = require('../routes/homeDetails')
-router.post('/homeDetails',homeDetailsInfo)
+const {ho,ap} = require('../routes/homeDetails')
+router.post('/homeDetails',ho)
+router.post('/homeDetails/applyLeave',ap)
 
 const {homeInfo,updateAttendance } = require('../routes/homeCopy')
 router.post('/homeCopy',homeInfo)
