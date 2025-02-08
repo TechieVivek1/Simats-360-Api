@@ -140,7 +140,8 @@ router.post('/midDuty',midDuty)
 const generalPendingDutyCount = require('../routes/GeneralDutyCount')
 router.post('/generalPendingDutyCount',generalPendingDutyCount)
 
-// 
+const salaryBreakup = require('../routes/salaryBreakup')
+router.post('/salaryBreakup',salaryBreakup)
 
 
 module.exports = router

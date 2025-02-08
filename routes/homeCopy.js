@@ -370,12 +370,13 @@ async function calculateAttendanceC(punchResultData, holidayResultdata, shiftTot
     return {totalWorkingDays,totalPresent,presentDays,absentDays,totalHalfWorkingDays,weekoffDays,totalWorkingHours,adjustedBuffTime,gsonData,attendancePercentage}
 
 }
-<<<<<<< HEAD
+
 const db = require('../config'); // Import database connection
+const moment = require('moment'); // Import moment.js for date formatting
 
 const updateAttendance = async (req, res) => {
     try {
-        const { bioId, campus, cl, sl } = req.body;
+        const { bioId, campus, cl, sl, el } = req.body;
 
         if (!bioId) {
             return res.status(400).json({ status: false, message: "bioId is required" });
@@ -385,34 +386,63 @@ const updateAttendance = async (req, res) => {
             return res.status(400).json({ status: false, message: "campus is required" });
         }
 
-        if (cl === undefined || sl === undefined) {
-            return res.status(400).json({ status: false, message: "casualLeave and sickLeave are required" });
+        if (cl === undefined || sl === undefined || el === undefined) {
+            return res.status(400).json({ status: false, message: "cl,sl and el are required" });
         }
 
-        // Update the leave limits using SQL query
-        const query = `UPDATE available_leave SET casual_leave_limit = ?, sick_leave_limit = ?, updated_at = NOW() WHERE bio_id = ? AND campus = ?`;
-        
-        db.query(query, [cl, sl, bioId, campus], (err, result) => {
+        // First, fetch the current 'updated_at' from the database
+        const fetchQuery = `SELECT updated_at FROM available_leave WHERE bio_id = ? AND campus = ?`;
+
+        db.query(fetchQuery, [bioId, campus], (err, result) => {
             if (err) {
-                console.error("Error updating leave limits:", err);
+                console.error("Error fetching updated_at:", err);
                 return res.status(500).json({ status: false, message: "Internal server error" });
             }
-            
-            if (result.affectedRows === 0) {
+
+            if (result.length === 0) {
                 return res.status(404).json({ status: false, message: "Leave record not found" });
             }
 
-            return res.status(200).json({ status: true, message: "Leave limits updated successfully" });
+            // Extract the 'updated_at' field from the result
+            const updatedAt = result[0].updated_at;
+
+            // Format the 'updated_at' to the required format (YYYY-MM-DD HH:MM:SS)
+            const formattedUpdatedAt = moment(updatedAt).format('YYYY-MM-DD HH:mm:ss');
+
+            // Now, update the leave limits and use the formatted 'updated_at' value
+            const updateQuery = `
+                UPDATE available_leave
+                SET casual_leave_limit = casual_leave_limit + ?, 
+                sick_leave_limit = sick_leave_limit + ?, earned_leave_limit = earned_leave_limit + ? ,updated_at = ?
+                WHERE bio_id = ? AND campus = ? ;
+            `;
+
+            db.query(updateQuery, [cl, sl, el,formattedUpdatedAt, bioId, campus], (err, result) => {
+                if (err) {
+                    console.error("Error updating leave limits:", err);
+                    return res.status(500).json({ status: false, message: "Internal server error" });
+                }
+                
+                if (result.affectedRows === 0) {
+                    return res.status(404).json({ status: false, message: "Leave record not found" });
+                }
+
+                // Send back the response with the formatted 'updated_at'
+                return res.status(200).json({
+                    status: true,
+                    message: "Leave limits updated successfully",
+                    updated_at: formattedUpdatedAt // Include the formatted 'updated_at' in the response
+                });
+            });
         });
     } catch (error) {
-        console.error("Error updating leave limits:", error);
+        console.log("Error updating leave limits:", error);
         return res.status(500).json({ status: false, message: "Internal server error" });
     }
 };
 
 
-=======
->>>>>>> 897c188 (changes)
+
 
 const homeInfo = async (req, res) => {
     const { bioId, campus, category, year, month } = req.body;
@@ -497,8 +527,4 @@ const homeInfo = async (req, res) => {
     }
 };
 
-<<<<<<< HEAD
 module.exports = {homeInfo,updateAttendance};
-=======
-module.exports = homeInfo;
->>>>>>> 897c188 (changes)
