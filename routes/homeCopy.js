@@ -420,7 +420,7 @@ const updateAttendance = async (req, res) => {
             db.query(updateQuery, [cl, sl, el,formattedUpdatedAt, bioId, campus], (err, result) => {
                 if (err) {
                     console.error("Error updating leave limits:", err);
-                    return res.status(500).json({ status: false, message: "Internal server error" });
+                    return res.status(500).json({ status: false, message: "Internal server error" ,error:err});
                 }
                 
                 if (result.affectedRows === 0) {
@@ -440,8 +440,6 @@ const updateAttendance = async (req, res) => {
         return res.status(500).json({ status: false, message: "Internal server error" });
     }
 };
-
-
 
 
 const homeInfo = async (req, res) => {

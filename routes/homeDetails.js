@@ -126,7 +126,7 @@ const ap = async (req, res) => {
 
         con.query(selectQuery, [bioId, leaveType, startDate, endDate], (err, result) => {
             if (err) {
-                return res.status(500).json({ status: false, message: 'Server Error', error: err.message });
+                return res.status(500).json({ status: false, message: 'Server Error', error: err });
             }
 
             if (result.length !== 0) {
@@ -141,14 +141,14 @@ const ap = async (req, res) => {
                 totalDays, headId, reason, "uploads/" + fileName, status,createdOn,updatedOn], async (err, results) => {
 
                 if (err) {
-                    return res.status(500).json({ status: false, message: 'Server Error', error: err.message });
+                    return res.status(500).json({ status: false, message: 'Server Error', error: err });
                 }
 
                 if (results.affectedRows > 0) {
                     // Fetch the newly inserted leave details
                     con.query(selectQuery, [bioId, leaveType, startDate, endDate], (err, newResult) => {
                         if (err) {
-                            return res.status(500).json({ status: false, message: 'Error fetching leave data', error: err.message });
+                            return res.status(500).json({ status: false, message: 'Error fetching leave data', error: err });
                         }
 
                         return res.status(200).json({
