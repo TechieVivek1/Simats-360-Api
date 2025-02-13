@@ -93,10 +93,9 @@ const ap = async (req, res) => {
             return res.status(400).send({ status: 400, message: err.message });
         }
 
-        let { campus, bioId, leaveCategory, leaveType, daySession,
-            startDate, endDate, totalDays, headId, reason, status ,createdOn,updatedOn} = req.body;
+        let { campus, bioId, leaveCategory, leaveType, daySession, startDate, endDate, totalDays, headId, reason, status, createdOn, updatedOn, hr_status } = req.body;
 
-        if (!bioId || !campus || !leaveCategory || !leaveType || !startDate || !totalDays || !headId || !reason || !status || !createdOn || !updatedOn) {
+        if (!bioId || !campus || !leaveCategory || !leaveType || !startDate || !totalDays || !headId || !reason || !status || !createdOn || !updatedOn || !hr_status) {
             return res.status(400).json({ status: false, message: 'Empty Fields' });
         }
 
@@ -112,19 +111,18 @@ const ap = async (req, res) => {
         let insertQuery = `INSERT INTO apply_leave 
                         (campus, bio_id, category, leave_type, half_day_session, 
                         start_date, end_date, total_days, assigned_head_id, reason, 
-                        file, status, create_on, updated_at)
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)`;
+                        file, status, create_on, updated_at, hr_status)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
         let selectQuery = `SELECT campus, bio_id, category, leave_type, half_day_session, 
                                   start_date, end_date, total_days, assigned_head_id, reason, 
                                   file, status, hr_status, create_on, updated_at
                            FROM apply_leave 
                            WHERE bio_id = ?
-                           AND leave_type = ?
                            AND start_date = ?
                            AND end_date = ?`;
 
-        con.query(selectQuery, [bioId, leaveType, startDate, endDate], (err, result) => {
+        con.query(selectQuery, [bioId, startDate, endDate], (err, result) => {
             if (err) {
                 return res.status(500).json({ status: false, message: 'Server Error', error: err });
             }
@@ -133,19 +131,18 @@ const ap = async (req, res) => {
                 return res.status(409).json({
                     status: false,
                     message: 'Leave Already Applied',
-                    data: result[0] // Returning the existing leave details
+                    data: result[0]
                 });
             }
 
             con.query(insertQuery, [campus, bioId, leaveCategory, leaveType, daySession, startDate, endDate,
-                totalDays, headId, reason, "uploads/" + fileName, status,createdOn,updatedOn], async (err, results) => {
+                totalDays, headId, reason, "uploads/" + fileName, status, createdOn, updatedOn, hr_status], async (err, results) => {
 
                 if (err) {
                     return res.status(500).json({ status: false, message: 'Server Error', error: err });
                 }
 
                 if (results.affectedRows > 0) {
-                    // Fetch the newly inserted leave details
                     con.query(selectQuery, [bioId, leaveType, startDate, endDate], (err, newResult) => {
                         if (err) {
                             return res.status(500).json({ status: false, message: 'Error fetching leave data', error: err });
@@ -154,7 +151,7 @@ const ap = async (req, res) => {
                         return res.status(200).json({
                             status: true,
                             message: 'Leave Applied Successfully',
-                            data: newResult[0] // Returning the newly applied leave details
+                            data: newResult[0]
                         });
                     });
                 } else {
@@ -167,6 +164,7 @@ const ap = async (req, res) => {
         });
     });
 };
+
 
 
 module.exports = {ho,ap};

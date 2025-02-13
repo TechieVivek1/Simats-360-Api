@@ -347,7 +347,7 @@ async function calculateAttendanceC(punchResultData, holidayResultdata, shiftTot
                 weekoffDays++
                 gsonData.push({date :punchDate,remainingBuff:adjustedBuffTime,exceed:inTime,early:outTime,status:"week off"})
             }
-
+  
         }
     })
 
@@ -357,8 +357,6 @@ async function calculateAttendanceC(punchResultData, holidayResultdata, shiftTot
 
     // console.log("percentage:" +attendancePercentage);
     // console.log("totalWorkingDays:" + totalWorkingDays);
-    
-
     // console.log("holidays" +holidays);
 
     attendancePercentage =  (presentDays + totalHalfWorkingDays/2) / totalWorkingDays * 100
